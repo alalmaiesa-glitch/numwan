@@ -32,11 +32,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Generate lockfile
-        run: npm install --package-lock-only --ignore-scripts
-      - name: Export lockfile for verification
-        run: echo "LOCKFILE_BASE64=$(base64 -w0 package-lock.json)"
-      - name: Install exact dependency tree
+          cache: "npm"
+      - name: Install
         run: npm ci
       - name: Build
         run: npm run build
