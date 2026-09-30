@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { createEvidence, createExperiment, createHypothesis } from "./actions";
-import { hypothesisImportanceAr, verificationStatusAr, labelOf } from "@/lib/labels-ar";
+import { convertIdeaToAsset, createEvidence, createExperiment, createHypothesis } from "./actions";
+import { assetStatusAr, hypothesisImportanceAr, verificationStatusAr, labelOf } from "@/lib/labels-ar";
 
 export default async function LabPage({
   params, searchParams,
@@ -16,7 +17,10 @@ export default async function LabPage({
   const {data:idea}=await supabase.from("ideas").select("*").eq("id",ideaId).single();
   if(!idea) notFound();
 
-  const {data:hypothesesData}=await supabase.from("hypotheses").select("*").eq("idea_id",ideaId).order("created_at",{ascending:true});
+  const [{data:hypothesesData},{data:linkedAsset}]=await Promise.all([
+    supabase.from("hypotheses").select("*").eq("idea_id",ideaId).order("created_at",{ascending:true}),
+    supabase.from("assets").select("id,status").eq("source_idea_id",ideaId).maybeSingle(),
+  ]);
   const hypotheses=hypothesesData??[];
   const hypothesisIds=hypotheses.map(item=>item.id);
   let evidence:Array<Record<string,unknown>>=[];
@@ -38,7 +42,7 @@ export default async function LabPage({
     </header>
 
     <div className="tabs"><span className="tab active">نظرة عامة</span><span className="tab">الفرضيات</span><span className="tab">الأدلة</span><span className="tab">التجارب</span><span className="tab disabled">المخاطر</span><span className="tab disabled">التقييم</span><span className="tab disabled">القرار</span></div>
-    {query.error?<p className="error">تعذر حفظ العنصر. تحقق من البيانات والصلاحيات.</p>:null}
+    {query.error?<p className="error">{query.error==="asset-transition"?"تعذر تحويل الفرصة إلى أصل. تحقق من الصلاحيات وحاول مرة أخرى.":"تعذر حفظ العنصر. تحقق من البيانات والصلاحيات."}</p>:null}
 
     <section className="labOverview">
       {[
@@ -100,6 +104,15 @@ export default async function LabPage({
     <section className="deferredModules">
       <div><span>04</span><strong>المخاطر</strong><p>موجودة ضمن الإصدار الأول، وتظل مقفلة حتى اعتماد مقياس الاحتمال والأثر وقيم الحالة.</p></div>
       <div><span>05</span><strong>التقييم / القرار</strong><p>لا توجد قاعدة حساب أو قرار مشفّرة قبل اعتمادها صراحة.</p></div>
+    </section>
+
+    <section className="labModule">
+      <div className="labModuleHead"><span>06</span><div><small>الانتقال</small><h2>تحويل الفرصة إلى أصل</h2><p>ينشئ أصلًا مرتبطًا بهذه الفرصة بحالة «تطوير». يحتفظ نُموان ببيانات المختبر كاملة، ولا يعني التحويل نشر الأصل للعامة.</p></div></div>
+      <div className="labModuleBody">
+        {linkedAsset
+          ? <div className="recordList"><Link className="recordRow" href={`/assets/${linkedAsset.id}`}><span>أصل</span><p>تم تحويل هذه الفرصة إلى أصل.</p><i>{labelOf(assetStatusAr,linkedAsset.status)}</i><b>فتح الأصل ↗</b></Link></div>
+          : <form action={convertIdeaToAsset} className="form"><input type="hidden" name="idea_id" value={ideaId}/><p>التحويل متاح لمالك الفرصة فقط، وينفذ مرة واحدة لهذه الفرصة.</p><div><button className="button" type="submit">تحويل إلى أصل ↗</button></div></form>}
+      </div>
     </section>
   </>
 }

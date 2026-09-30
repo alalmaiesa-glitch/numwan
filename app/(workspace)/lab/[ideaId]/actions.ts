@@ -80,3 +80,23 @@ export async function createExperiment(form: FormData) {
   if (error) redirect("/lab/" + ideaId + "?error=experiment");
   refresh(ideaId);
 }
+
+
+export async function convertIdeaToAsset(form: FormData) {
+  const supabase = await requireUser();
+  const ideaId = value(form, "idea_id");
+  if (!ideaId) redirect("/vault");
+
+  const { data: assetId, error } = await supabase.rpc("convert_idea_to_asset_v1", {
+    p_idea_id: ideaId,
+  });
+
+  if (error || !assetId) {
+    redirect("/lab/" + ideaId + "?error=asset-transition");
+  }
+
+  revalidatePath("/lab/" + ideaId);
+  revalidatePath("/assets");
+  revalidatePath("/dashboard");
+  redirect("/assets/" + assetId);
+}

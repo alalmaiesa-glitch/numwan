@@ -1,34 +1,33 @@
 # Asset Transition & Operational Workflow V1
 
-Status: **Foundation implemented — transition action intentionally gated**  
+Status: **Operational transition enabled**  
 Date: 2026-09-30
+
+## Approved V1 decisions
+
+- The asset lifecycle status at conversion is `DEVELOPMENT`.
+- The opportunity owner is the only actor allowed to perform the V1 conversion.
+- Conversion does not publish the asset publicly.
 
 ## Implemented
 
-- Added `assets.source_idea_id` as an explicit provenance link back to the Vault/Lab opportunity.
-- The link uses `ON DELETE RESTRICT` so an opportunity cannot be deleted while an asset still depends on it.
-- Asset INSERT/UPDATE RLS now permits a non-null `source_idea_id` only when the authenticated user owns that opportunity.
-- Added automatic audit events:
+- `assets.source_idea_id` preserves provenance back to the Vault/Lab opportunity.
+- Source links use `ON DELETE RESTRICT`.
+- Asset INSERT/UPDATE RLS validates source-opportunity ownership.
+- One opportunity can produce at most one asset through a partial unique index.
+- `public.convert_idea_to_asset_v1(uuid)` is the single operational conversion RPC.
+- The RPC requires an authenticated owner, locks the source opportunity during conversion, is idempotent, and creates the asset in `DEVELOPMENT`.
+- Asset title, summary, disclosure level, and owner are derived from the source opportunity.
+- Lab data is retained; no hypotheses, evidence, or experiments are deleted or copied into invented asset fields.
+- Automatic audit events remain active:
   - `ASSET_CREATED`
   - `ASSET_STATUS_CHANGED`
-- Audit logging is performed by a private security-definer trigger and is not client-executable.
-- Existing asset lifecycle and disclosure constraints are unchanged.
-- No public publication policy was changed.
-- No commercial fields, pricing logic, scoring logic, or deal semantics were introduced.
+- The Lab UI exposes the conversion action and redirects to the resulting asset.
+- If the opportunity has already been converted, the Lab shows a link to the existing asset instead of another conversion action.
 
-## Intentionally not implemented yet
+## Explicitly unchanged / deferred
 
-The actual “convert opportunity to asset” action remains disabled until the approved V1 rules resolve:
-
-1. Which asset lifecycle status must be assigned at the exact moment an opportunity leaves the Lab.
-2. Which role/authority is allowed to approve that transition.
-
-These are business/workflow decisions and are not inferred from the database lifecycle names.
-
-## Acceptance checks
-
-- `source_idea_id` exists and is indexed.
-- Asset ownership RLS also validates source-opportunity ownership.
-- Asset insert/status-change audit trigger exists.
-- Security Advisor has no new High/Critical findings introduced by this migration.
-- Existing production test opportunity remains unchanged.
+- Public publication semantics remain unchanged.
+- Risks, Score, and Decision remain locked until their exact approved rules are recovered or supplied.
+- Asset-code generation remains unchanged; conversion does not invent a code-generation rule.
+- No pricing, commercial terms, investment instruments, KYC, or payment logic is introduced.
