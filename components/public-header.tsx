@@ -1,36 +1,15 @@
 "use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect,useState } from "react";
 
-export default function PublicHeader({ signedIn }: { signedIn: boolean }) {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 56);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  return (
-    <header className={`publicHeader ${scrolled ? "isScrolled" : ""}`}>
-      <div className="publicHeaderInner shellWide">
-        <Link href="/" className="wordmark" aria-label="نُموان">
-          <strong>نُموان</strong>
-          <small>NUMWAN</small>
-        </Link>
-
-        <nav className="publicLinks" aria-label="التنقل الرئيسي">
-          <a href="#assets">الأصول</a>
-          <a href="#method">كيف يعمل</a>
-          <a href="#about">عن نُموان</a>
-        </nav>
-
-        <Link className="headerAction" href={signedIn ? "/dashboard" : "/login"}>
-          {signedIn ? "حسابي" : "دخول"}
-        </Link>
-      </div>
-    </header>
-  );
+export default function PublicHeader({signedIn,light=false}:{signedIn:boolean;light?:boolean}) {
+  const [scrolled,setScrolled]=useState(false);
+  useEffect(()=>{const f=()=>setScrolled(window.scrollY>56);f();window.addEventListener("scroll",f,{passive:true});return()=>window.removeEventListener("scroll",f)},[]);
+  return <header className={`publicHeader ${light?"lightMode":""} ${scrolled?"isScrolled":""}`}>
+    <div className="publicHeaderInner shellWide">
+      <Link href="/" className="wordmark"><strong>نُموان</strong><small>NUMWAN</small></Link>
+      <nav className="publicLinks"><Link href="/#assets">الأصول</Link><Link href="/#method">كيف يعمل</Link><Link href="/about">عن نُموان</Link></nav>
+      <Link className="headerAction" href={signedIn?"/dashboard":"/login"}>{signedIn?"حسابي":"دخول"}</Link>
+    </div>
+  </header>
 }

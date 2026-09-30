@@ -1,0 +1,2 @@
+import PublicPageShell from "@/components/public-page-shell";
+export default function ContactPage(){return <PublicPageShell><section className="staticHero shellWide contactHero"><span className="sectionKicker">التواصل</span><h1>قناة التواصل العامة<br/>تُعتمد قبل الإطلاق.</h1><p>لا توجد في V1 حاليًا قناة تواصل عامة معتمدة أو نموذج مراسلة ضمن نطاق المنتج، لذلك لم نضف عنوانًا أو نموذجًا تجريبيًا غير موثّق. ستظهر القناة الرسمية هنا عند اعتمادها.</p></section></PublicPageShell>}
