@@ -3,42 +3,30 @@ import LoginForm from "./login-form";
 
 export default function LoginPage() {
   return (
-    <main className="authPage">
-      <div className="authShell">
-        <aside className="authStory">
-          <Link href="/" className="brand" aria-label="نُموان">
-            <span className="brandMark">ن</span>
-            <span className="brandCopy"><strong>نُموان</strong><small>NUMWAN</small></span>
-          </Link>
+    <main className="loginPage">
+      <section className="loginEditorial">
+        <Link href="/" className="loginWordmark">
+          <strong>نُموان</strong>
+          <small>NUMWAN</small>
+        </Link>
 
-          <div className="authStoryMain">
-            <span>مساحة عمل لبناء الأصل</span>
-            <h2>من الفكرة الأولى<br/>إلى قرار أوضح.</h2>
-            <p>
-              اجمع الفرضيات والأدلة والتجارب في مسار واحد، وحافظ على أثر
-              القرار من لحظة اكتشاف الفرصة حتى نضج الأصل.
-            </p>
-          </div>
+        <div>
+          <span className="sectionKicker light">PRIVATE WORKSPACE</span>
+          <h2>من الفرضية<br/>إلى أصل قابل للتقييم.</h2>
+        </div>
 
-          <div className="authStoryFoot">
-            <span>Vault</span>
-            <span>Hypotheses</span>
-            <span>Evidence</span>
-            <span>Experiments</span>
-          </div>
-        </aside>
+        <p>Curated Business Assets Platform</p>
+      </section>
 
-        <section className="authCard">
-          <Link href="/" className="brand">
-            <span className="brandMark">ن</span>
-            <span className="brandCopy"><strong>نُموان</strong><small>NUMWAN</small></span>
-          </Link>
-          <Link href="/" className="backHome">→ العودة إلى الصفحة الرئيسية</Link>
-          <h1>مرحبًا بعودتك</h1>
-          <p className="muted">سجّل الدخول للوصول إلى مساحة العمل الخاصة بك.</p>
+      <section className="loginPanel">
+        <div className="loginPanelInner">
+          <Link href="/" className="backLink">→ العودة إلى نُموان</Link>
+          <span className="sectionKicker">مساحة العمل</span>
+          <h1>تسجيل الدخول</h1>
+          <p className="muted">استخدم بيانات حسابك للوصول إلى Vault وLab والأصول والصفقات.</p>
           <LoginForm />
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
   );
 }

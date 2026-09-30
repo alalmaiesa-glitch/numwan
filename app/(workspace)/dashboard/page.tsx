@@ -14,42 +14,42 @@ export default async function DashboardPage() {
     countRows("data_room_documents"),
   ]);
 
+  const metrics = [
+    ["01", ideas, "أفكار في Vault"],
+    ["02", assets, "أصول"],
+    ["03", deals, "صفقات"],
+    ["04", documents, "مستندات Data Room"],
+  ] as const;
+
   return (
     <>
-      <section className="dashboardHero">
+      <header className="workspacePageHead">
+        <span className="sectionKicker">نظرة عامة</span>
+        <h1>لوحة التحكم</h1>
+        <p>ملخص العناصر التي تملك صلاحية الوصول إليها.</p>
+      </header>
+
+      <section className="metricsGrid">
+        {metrics.map(([index, value, label]) => (
+          <article className="metricRow" key={index}>
+            <span>{index}</span>
+            <strong>{value}</strong>
+            <p>{label}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="workspaceEditorial">
         <div>
-          <span className="eyebrow">نظرة عامة</span>
-          <h1>مساحة العمل</h1>
-          <p>ملخص العناصر التي تملك صلاحية الوصول إليها في نُموان.</p>
+          <span className="sectionKicker">مسار الأصل</span>
+          <h2>العمل هنا يبدأ<br/>قبل أن يظهر الأصل.</h2>
         </div>
-        <span className="dashboardHeroBadge">V1 · ACTIVE WORKSPACE</span>
-      </section>
-
-      <section className="stats">
-        <article className="stat"><strong>{ideas}</strong><span>أفكار في Vault</span></article>
-        <article className="stat"><strong>{assets}</strong><span>أصول</span></article>
-        <article className="stat"><strong>{deals}</strong><span>صفقات</span></article>
-        <article className="stat"><strong>{documents}</strong><span>مستندات Data Room</span></article>
-      </section>
-
-      <section className="dashboardColumns">
-        <article className="panel">
-          <h2>مسار بناء الأصل</h2>
-          <div className="workflowList">
-            <div className="workflowRow"><span>01</span><div><b>Vault</b><small>التقاط الفرصة وسياقها الأولي</small></div><i>الفرص</i></div>
-            <div className="workflowRow"><span>02</span><div><b>Lab</b><small>الفرضيات والأدلة والتجارب</small></div><i>التحقق</i></div>
-            <div className="workflowRow"><span>03</span><div><b>Assets</b><small>الأصول التي انتقلت لمسار النضج</small></div><i>الأصل</i></div>
-            <div className="workflowRow"><span>04</span><div><b>Deals</b><small>مسار الصفقات المصرح لك بها</small></div><i>المسار</i></div>
-          </div>
-        </article>
-
-        <article className="panel">
-          <h2>مبدأ العمل</h2>
-          <p className="muted">
-            نُموان يحافظ على العلاقة بين الفرصة وما يدعم القرار حولها:
-            فرضية واضحة، دليل موثّق، تجربة قابلة للتقييم، ثم انتقال منضبط إلى الأصل.
-          </p>
-        </article>
+        <div className="workspaceProcess">
+          <div><span>01</span><strong>Vault</strong><p>التقاط الفرصة وسياقها الأولي.</p></div>
+          <div><span>02</span><strong>Lab</strong><p>الفرضيات والأدلة والتجارب.</p></div>
+          <div><span>03</span><strong>Assets</strong><p>الأصول التي انتقلت إلى مسار النضج.</p></div>
+          <div><span>04</span><strong>Deals</strong><p>مسار الصفقات المصرح لك بها.</p></div>
+        </div>
       </section>
     </>
   );

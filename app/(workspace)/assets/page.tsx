@@ -9,12 +9,33 @@ export default async function AssetsPage() {
 
   return (
     <>
-      <div className="pageHead"><div><h1>الأصول</h1><p>عرض الأصول المصرح لك بالوصول إليها. تغيير الحالة مؤجل لمسار مدقق.</p></div></div>
-      <section className="panel">
-        {assets?.length ? <div className="tableWrap"><table className="table">
-          <thead><tr><th>الرمز</th><th>الأصل</th><th>الحالة</th><th>الإفصاح</th></tr></thead>
-          <tbody>{assets.map((asset) => <tr key={asset.id}><td>{asset.asset_code || "—"}</td><td><strong>{asset.title}</strong><br/><span className="muted">{asset.summary || ""}</span></td><td>{asset.status}</td><td>{asset.disclosure_level}</td></tr>)}</tbody>
-        </table></div> : <div className="empty">لا توجد أصول متاحة لهذا الحساب.</div>}
+      <header className="workspacePageHead">
+        <span className="sectionKicker">Portfolio</span>
+        <h1>الأصول</h1>
+        <p>الأصول التي تملك صلاحية الوصول إليها. تغيير الحالة يبقى ضمن المسار المدقق المعتمد.</p>
+      </header>
+
+      <section className="assetWorkspaceList">
+        {assets?.length ? assets.map((asset, index) => (
+          <article className="assetWorkspaceRow" key={asset.id}>
+            <span className="assetWorkspaceIndex">{String(index + 1).padStart(2, "0")}</span>
+            <div className="assetWorkspaceMain">
+              <small>{asset.asset_code || "ASSET"}</small>
+              <h2>{asset.title}</h2>
+              <p>{asset.summary || "لا يوجد وصف مختصر لهذا الأصل."}</p>
+            </div>
+            <div className="assetWorkspaceMeta">
+              <div><span>الحالة</span><strong>{asset.status}</strong></div>
+              <div><span>الإفصاح</span><strong>{asset.disclosure_level}</strong></div>
+            </div>
+          </article>
+        )) : (
+          <div className="editorialEmpty">
+            <span>00</span>
+            <h2>لا توجد أصول متاحة لهذا الحساب.</h2>
+            <p>ستظهر الأصول هنا عند انتقالها إلى المسار المعتمد داخل V1.</p>
+          </div>
+        )}
       </section>
     </>
   );

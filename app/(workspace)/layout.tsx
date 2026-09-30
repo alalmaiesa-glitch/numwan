@@ -16,31 +16,29 @@ export default async function WorkspaceLayout({
   return (
     <div className="workspace">
       <aside className="sidebar">
-        <Link href="/dashboard" className="brand">
-          <span className="brandMark">ن</span>
-          <span className="brandCopy"><strong>نُموان</strong><small>NUMWAN</small></span>
+        <Link href="/dashboard" className="workspaceWordmark">
+          <strong>نُموان</strong>
+          <small>NUMWAN / V1</small>
         </Link>
 
-        <span className="sidebarLabel">WORKSPACE</span>
-
-        <nav className="sidebarNav" aria-label="مساحة العمل">
-          <Link href="/dashboard"><span>لوحة التحكم</span><span className="navCode">01</span></Link>
-          <Link href="/vault"><span>Vault الأفكار</span><span className="navCode">02</span></Link>
-          <Link href="/assets"><span>الأصول</span><span className="navCode">03</span></Link>
-          <Link href="/deals"><span>الصفقات</span><span className="navCode">04</span></Link>
+        <nav className="sidebarNav">
+          <Link href="/dashboard"><span>لوحة التحكم</span><small>01</small></Link>
+          <Link href="/vault"><span>Vault الأفكار</span><small>02</small></Link>
+          <Link href="/assets"><span>الأصول</span><small>03</small></Link>
+          <Link href="/deals"><span>الصفقات</span><small>04</small></Link>
         </nav>
 
         <div className="sidebarFoot">
-          <span className="sidebarFootLabel">الحساب الحالي</span>
+          <span>الحساب</span>
           <small>{email}</small>
         </div>
       </aside>
 
       <section className="content">
         <header className="workspaceHeader">
-          <div className="workspaceHeaderTitle">
-            <strong>نظام تطوير الأصول</strong>
-            <small>مساحة العمل · V1</small>
+          <div>
+            <small>CURATED BUSINESS ASSETS PLATFORM</small>
+            <strong>مساحة العمل</strong>
           </div>
           <LogoutButton />
         </header>
