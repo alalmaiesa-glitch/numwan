@@ -558,3 +558,235 @@ button{border:0}
   .headerActions{gap:12px}.headerActions>a:first-child{font-size:12px}
   .footerActions{align-items:flex-start;flex-direction:column;gap:8px}
 }
+
+
+/* ===== Arabic typography & spacing correction V1 ===== */
+.publicSite:not(.englishSite){
+  --ar-hero:clamp(48px,5.15vw,80px);
+  --ar-h2:clamp(38px,4.15vw,60px);
+  --ar-h3:clamp(27px,2.55vw,38px);
+}
+.publicSite:not(.englishSite) h1,
+.publicSite:not(.englishSite) h2,
+.publicSite:not(.englishSite) h3,
+.workspace h1,.workspace h2,.workspace h3{
+  text-wrap:balance;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+
+/* Header */
+.publicSite:not(.englishSite) .publicHeader{height:86px}
+.publicSite:not(.englishSite) .publicHeaderInner{gap:40px}
+.publicSite:not(.englishSite) .wordmark strong{font-size:28px;line-height:1.2}
+.publicSite:not(.englishSite) .publicLinks{gap:34px;font-size:15px}
+.publicSite:not(.englishSite) .headerActions{gap:20px}
+
+/* Hero */
+.publicSite:not(.englishSite) .editorialHero{min-height:88vh}
+.publicSite:not(.englishSite) .editorialHeroGrid{
+  min-height:88vh;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  gap:72px;
+  padding-top:122px;
+  padding-bottom:76px;
+}
+.publicSite:not(.englishSite) .editorialHeroCopy{max-width:640px;min-width:0}
+.publicSite:not(.englishSite) .editorialHeroCopy h1{
+  font-size:var(--ar-hero);
+  line-height:1.18;
+  letter-spacing:-.028em;
+  margin:18px 0 28px;
+  max-width:640px;
+}
+.publicSite:not(.englishSite) .editorialHeroCopy p{
+  font-size:18px;
+  line-height:1.95;
+  max-width:600px;
+}
+.publicSite:not(.englishSite) .heroActions{margin-top:34px}
+.publicSite:not(.englishSite) .assetHeroVisual{
+  min-height:540px;
+  padding:34px;
+}
+.publicSite:not(.englishSite) .visualTitle{
+  gap:8px;
+  max-width:88%;
+}
+.publicSite:not(.englishSite) .visualTitle strong{
+  font-size:clamp(44px,4.5vw,66px);
+  line-height:1.18;
+  letter-spacing:-.025em;
+}
+.publicSite:not(.englishSite) .visualTitle span{font-size:12px}
+.publicSite:not(.englishSite) .visualGrid span{
+  font-size:12px;
+  line-height:1.6;
+  padding:14px 12px;
+}
+.publicSite:not(.englishSite) .assetHeroVisual>p{
+  font-size:12px;
+  line-height:1.7;
+}
+
+/* Main section typography */
+.publicSite:not(.englishSite) .sectionHeading h2,
+.publicSite:not(.englishSite) .manifestoSection h2,
+.publicSite:not(.englishSite) .methodIntro h2,
+.publicSite:not(.englishSite) .closingSection h2{
+  font-size:var(--ar-h2);
+  line-height:1.28;
+  letter-spacing:-.025em;
+}
+.publicSite:not(.englishSite) .sectionHeading p,
+.publicSite:not(.englishSite) .manifestoSection p{
+  font-size:17px;
+  line-height:1.95;
+}
+.publicSite:not(.englishSite) .sectionHeading{margin-bottom:62px}
+.publicSite:not(.englishSite) .portfolioSection{padding-block:145px 135px}
+.publicSite:not(.englishSite) .manifestoSection,
+.publicSite:not(.englishSite) .assetAnatomy,
+.publicSite:not(.englishSite) .methodSection{padding-block:145px}
+.publicSite:not(.englishSite) .closingSection{padding-block:145px 110px}
+
+/* Portfolio: create a real gutter between text and visual */
+.publicSite:not(.englishSite) .portfolioHolding{
+  grid-template-columns:minmax(0,1.12fr) minmax(360px,.88fr);
+  min-height:520px;
+}
+.publicSite:not(.englishSite) .holdingVisual{
+  min-height:520px;
+  padding:42px;
+}
+.publicSite:not(.englishSite) .holdingCopy{
+  min-width:0;
+  padding:64px 72px;
+  align-self:center;
+}
+.publicSite:not(.englishSite) .holdingCopy h3{
+  font-size:clamp(28px,2.45vw,38px);
+  line-height:1.48;
+  letter-spacing:-.02em;
+  margin:16px 0 24px;
+  max-width:520px;
+}
+.publicSite:not(.englishSite) .holdingCopy p{
+  font-size:16px;
+  line-height:2;
+  max-width:520px;
+}
+.publicSite:not(.englishSite) .holdingVisual b{
+  font-size:clamp(72px,7.8vw,118px);
+  line-height:1;
+}
+
+/* Manifesto and content */
+.publicSite:not(.englishSite) .manifestoGrid{
+  grid-template-columns:minmax(180px,.30fr) minmax(0,1fr);
+  gap:92px;
+}
+.publicSite:not(.englishSite) .manifestoSection h2{
+  max-width:950px;
+}
+.publicSite:not(.englishSite) .anatomyRow strong{
+  font-size:clamp(20px,1.75vw,27px);
+  line-height:1.5;
+}
+.publicSite:not(.englishSite) .methodIntro{margin-bottom:70px}
+.publicSite:not(.englishSite) .methodStep{
+  min-height:270px;
+  padding-top:25px;
+}
+.publicSite:not(.englishSite) .methodStep h3{
+  font-size:25px;
+  line-height:1.45;
+  margin:52px 0 14px;
+}
+.publicSite:not(.englishSite) .methodStep p{
+  font-size:14px;
+  line-height:1.95;
+}
+.publicSite:not(.englishSite) .closingSection h2{
+  max-width:900px;
+  margin:16px 0 38px;
+}
+
+/* Static public pages */
+.publicSite:not(.englishSite) .staticHero h1{
+  font-size:var(--ar-h2);
+  line-height:1.28;
+  letter-spacing:-.025em;
+}
+.publicSite:not(.englishSite) .staticEditorial h2,
+.publicSite:not(.englishSite) .legalPage>h1{
+  font-size:clamp(36px,3.8vw,56px);
+  line-height:1.3;
+  letter-spacing:-.02em;
+}
+
+/* Workspace Arabic hierarchy */
+.workspace .workspacePageHead h1,
+.workspace .assetDetailHead h1,
+.workspace .labHead h1{
+  font-size:clamp(42px,4.2vw,62px);
+  line-height:1.25;
+  letter-spacing:-.025em;
+}
+.workspace .workspaceEditorial h2,
+.workspace .assetNarrativeTitle h2,
+.workspace .vaultComposeIntro h2,
+.workspace .workspaceSectionTitle h2{
+  font-size:clamp(32px,3vw,44px);
+  line-height:1.35;
+  letter-spacing:-.02em;
+}
+.workspace .labModuleHead h2{font-size:34px;line-height:1.4}
+.workspace .assetDetailVisual>strong{
+  font-family:var(--font-arabic-display),sans-serif;
+  font-size:clamp(48px,5.5vw,78px);
+  line-height:1.2;
+  letter-spacing:-.025em;
+}
+.workspace .workspaceHeader small,
+.workspace .workspaceWordmark small,
+.workspace .labModuleHead small,
+.workspace .detailActionGrid span{
+  font-family:var(--font-arabic-body),sans-serif;
+  letter-spacing:0;
+}
+
+/* Mid-sized desktop protection */
+@media(max-width:1200px){
+  .publicSite:not(.englishSite) .editorialHeroGrid{gap:48px}
+  .publicSite:not(.englishSite) .editorialHeroCopy h1{font-size:clamp(46px,5vw,68px)}
+  .publicSite:not(.englishSite) .visualTitle strong{font-size:clamp(42px,4vw,58px)}
+  .publicSite:not(.englishSite) .holdingCopy{padding:50px 48px}
+  .publicSite:not(.englishSite) .holdingCopy h3{font-size:32px}
+}
+
+/* Tablet/mobile: reset to single-column with safe rhythm */
+@media(max-width:1000px){
+  .publicSite:not(.englishSite) .editorialHeroGrid{
+    grid-template-columns:1fr;
+    gap:46px;
+    min-height:auto;
+    padding-top:130px;
+  }
+  .publicSite:not(.englishSite) .editorialHeroCopy{max-width:720px}
+  .publicSite:not(.englishSite) .portfolioHolding{grid-template-columns:1fr}
+  .publicSite:not(.englishSite) .holdingCopy{padding:48px 12px}
+  .publicSite:not(.englishSite) .holdingCopy h3,
+  .publicSite:not(.englishSite) .holdingCopy p{max-width:720px}
+}
+@media(max-width:760px){
+  .publicSite:not(.englishSite) .publicHeader{height:78px}
+  .publicSite:not(.englishSite) .editorialHeroCopy h1{font-size:46px;line-height:1.24}
+  .publicSite:not(.englishSite) .visualTitle strong{font-size:42px;line-height:1.22}
+  .publicSite:not(.englishSite) .sectionHeading h2,
+  .publicSite:not(.englishSite) .manifestoSection h2,
+  .publicSite:not(.englishSite) .methodIntro h2,
+  .publicSite:not(.englishSite) .closingSection h2{font-size:38px;line-height:1.35}
+  .publicSite:not(.englishSite) .holdingCopy h3{font-size:28px;line-height:1.5}
+  .publicSite:not(.englishSite) .manifestoGrid{grid-template-columns:1fr;gap:28px}
+}
