@@ -26,7 +26,14 @@ export default function LoginForm() {
       return;
     }
 
-    router.replace("/dashboard");
+    const search = new URLSearchParams(window.location.search);
+    const requested = search.get("next");
+    const safeNext =
+      requested && requested.startsWith("/") && !requested.startsWith("//")
+        ? requested
+        : "/dashboard";
+
+    router.replace(safeNext);
     router.refresh();
   }
 
