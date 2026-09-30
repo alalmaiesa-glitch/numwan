@@ -1119,3 +1119,48 @@ button{border:0}
     max-width:none;
   }
 }
+
+
+/* Vault opportunity row action */
+.ideaRow{
+  grid-template-columns:56px minmax(0,1fr) 80px 148px;
+  align-items:center;
+}
+.ideaRowAction{
+  min-height:44px;
+  padding:0 14px;
+  border:1px solid var(--ink);
+  border-radius:3px;
+  background:var(--ink);
+  color:var(--ivory);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  white-space:nowrap;
+  font-size:14px;
+  font-weight:700;
+  transition:background .18s ease,color .18s ease;
+}
+.ideaRowAction b{
+  font-family:var(--font-latin),sans-serif;
+  font-size:16px;
+  font-weight:400;
+}
+.ideaRow:hover .ideaRowAction{
+  background:var(--mineral);
+  border-color:var(--mineral);
+}
+@media(max-width:760px){
+  .ideaRow{
+    grid-template-columns:40px minmax(0,1fr) 118px;
+  }
+  .ideaRow>i{
+    display:none;
+  }
+  .ideaRowAction{
+    min-height:42px;
+    padding:0 10px;
+    font-size:13px;
+  }
+}
