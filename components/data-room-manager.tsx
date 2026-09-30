@@ -224,7 +224,7 @@ export default function DataRoomManager({
                 </div>
                 <i>خاص</i>
                 <button
-                  className="documentAction"
+                  className="documentAction roomActionButton"
                   type="button"
                   onClick={() => downloadDocument(document)}
                   disabled={busy === "download:" + document.id}
@@ -240,6 +240,7 @@ export default function DataRoomManager({
                     <div>
                       <input name="email" type="email" placeholder="name@example.com" required />
                       <button
+                        className="roomAccessButton"
                         type="submit"
                         disabled={busy === "grant:" + document.id}
                       >
@@ -254,6 +255,7 @@ export default function DataRoomManager({
                         <div key={grant.user_id}>
                           <span>{grant.email}</span>
                           <button
+                            className="roomRevokeButton"
                             type="button"
                             onClick={() => revokeAccess(document.id, grant.user_id)}
                             disabled={busy === "revoke:" + document.id + ":" + grant.user_id}
