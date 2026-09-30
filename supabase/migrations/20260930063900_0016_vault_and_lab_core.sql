@@ -19,13 +19,19 @@ create table public.ideas (
 
 create index ideas_created_by_idx on public.ideas(created_by);
 create index ideas_confidentiality_level_idx on public.ideas(confidentiality_level);
+
 alter table public.ideas enable row level security;
 
-create policy ideas_select_own on public.ideas for select to authenticated
+create policy ideas_select_own
+on public.ideas for select to authenticated
 using (created_by = (select auth.uid()));
-create policy ideas_insert_own on public.ideas for insert to authenticated
+
+create policy ideas_insert_own
+on public.ideas for insert to authenticated
 with check (created_by = (select auth.uid()));
-create policy ideas_update_own on public.ideas for update to authenticated
+
+create policy ideas_update_own
+on public.ideas for update to authenticated
 using (created_by = (select auth.uid()))
 with check (created_by = (select auth.uid()));
 
@@ -35,7 +41,8 @@ create table public.hypotheses (
   code text not null check (length(btrim(code)) > 0),
   description text not null check (length(btrim(description)) > 0),
   hypothesis_type text,
-  importance text not null check (importance in ('CRITICAL','MAJOR','SECONDARY')),
+  importance text not null
+    check (importance in ('CRITICAL','MAJOR','SECONDARY')),
   verification_status text not null default 'UNTESTED'
     check (verification_status in ('UNTESTED','TESTING','SUPPORTED','REJECTED')),
   created_at timestamptz not null default now(),
@@ -46,25 +53,42 @@ create table public.hypotheses (
 create index hypotheses_idea_id_idx on public.hypotheses(idea_id);
 alter table public.hypotheses enable row level security;
 
-create policy hypotheses_select_by_idea_owner on public.hypotheses for select to authenticated
-using (exists (
-  select 1 from public.ideas i
-  where i.id = hypotheses.idea_id and i.created_by = (select auth.uid())
-));
-create policy hypotheses_insert_by_idea_owner on public.hypotheses for insert to authenticated
-with check (exists (
-  select 1 from public.ideas i
-  where i.id = hypotheses.idea_id and i.created_by = (select auth.uid())
-));
-create policy hypotheses_update_by_idea_owner on public.hypotheses for update to authenticated
-using (exists (
-  select 1 from public.ideas i
-  where i.id = hypotheses.idea_id and i.created_by = (select auth.uid())
-))
-with check (exists (
-  select 1 from public.ideas i
-  where i.id = hypotheses.idea_id and i.created_by = (select auth.uid())
-));
+create policy hypotheses_select_by_idea_owner
+on public.hypotheses for select to authenticated
+using (
+  exists (
+    select 1 from public.ideas i
+    where i.id = hypotheses.idea_id
+      and i.created_by = (select auth.uid())
+  )
+);
+
+create policy hypotheses_insert_by_idea_owner
+on public.hypotheses for insert to authenticated
+with check (
+  exists (
+    select 1 from public.ideas i
+    where i.id = hypotheses.idea_id
+      and i.created_by = (select auth.uid())
+  )
+);
+
+create policy hypotheses_update_by_idea_owner
+on public.hypotheses for update to authenticated
+using (
+  exists (
+    select 1 from public.ideas i
+    where i.id = hypotheses.idea_id
+      and i.created_by = (select auth.uid())
+  )
+)
+with check (
+  exists (
+    select 1 from public.ideas i
+    where i.id = hypotheses.idea_id
+      and i.created_by = (select auth.uid())
+  )
+);
 
 create table public.evidence (
   id uuid primary key default gen_random_uuid(),
@@ -76,7 +100,8 @@ create table public.evidence (
   evidence_type text,
   proves text,
   does_not_prove text,
-  evidence_strength text not null check (evidence_strength in ('E1','E2','E3','E4','E5')),
+  evidence_strength text not null
+    check (evidence_strength in ('E1','E2','E3','E4','E5')),
   created_at timestamptz not null default now(),
   unique (hypothesis_id, code)
 );
@@ -84,29 +109,50 @@ create table public.evidence (
 create index evidence_hypothesis_id_idx on public.evidence(hypothesis_id);
 alter table public.evidence enable row level security;
 
-create policy evidence_select_by_idea_owner on public.evidence for select to authenticated
-using (exists (
-  select 1 from public.hypotheses h
-  join public.ideas i on i.id = h.idea_id
-  where h.id = evidence.hypothesis_id and i.created_by = (select auth.uid())
-));
-create policy evidence_insert_by_idea_owner on public.evidence for insert to authenticated
-with check (exists (
-  select 1 from public.hypotheses h
-  join public.ideas i on i.id = h.idea_id
-  where h.id = evidence.hypothesis_id and i.created_by = (select auth.uid())
-));
-create policy evidence_update_by_idea_owner on public.evidence for update to authenticated
-using (exists (
-  select 1 from public.hypotheses h
-  join public.ideas i on i.id = h.idea_id
-  where h.id = evidence.hypothesis_id and i.created_by = (select auth.uid())
-))
-with check (exists (
-  select 1 from public.hypotheses h
-  join public.ideas i on i.id = h.idea_id
-  where h.id = evidence.hypothesis_id and i.created_by = (select auth.uid())
-));
+create policy evidence_select_by_idea_owner
+on public.evidence for select to authenticated
+using (
+  exists (
+    select 1
+    from public.hypotheses h
+    join public.ideas i on i.id = h.idea_id
+    where h.id = evidence.hypothesis_id
+      and i.created_by = (select auth.uid())
+  )
+);
+
+create policy evidence_insert_by_idea_owner
+on public.evidence for insert to authenticated
+with check (
+  exists (
+    select 1
+    from public.hypotheses h
+    join public.ideas i on i.id = h.idea_id
+    where h.id = evidence.hypothesis_id
+      and i.created_by = (select auth.uid())
+  )
+);
+
+create policy evidence_update_by_idea_owner
+on public.evidence for update to authenticated
+using (
+  exists (
+    select 1
+    from public.hypotheses h
+    join public.ideas i on i.id = h.idea_id
+    where h.id = evidence.hypothesis_id
+      and i.created_by = (select auth.uid())
+  )
+)
+with check (
+  exists (
+    select 1
+    from public.hypotheses h
+    join public.ideas i on i.id = h.idea_id
+    where h.id = evidence.hypothesis_id
+      and i.created_by = (select auth.uid())
+  )
+);
 
 create table public.experiments (
   id uuid primary key default gen_random_uuid(),
@@ -125,26 +171,47 @@ create table public.experiments (
 create index experiments_hypothesis_id_idx on public.experiments(hypothesis_id);
 alter table public.experiments enable row level security;
 
-create policy experiments_select_by_idea_owner on public.experiments for select to authenticated
-using (exists (
-  select 1 from public.hypotheses h
-  join public.ideas i on i.id = h.idea_id
-  where h.id = experiments.hypothesis_id and i.created_by = (select auth.uid())
-));
-create policy experiments_insert_by_idea_owner on public.experiments for insert to authenticated
-with check (exists (
-  select 1 from public.hypotheses h
-  join public.ideas i on i.id = h.idea_id
-  where h.id = experiments.hypothesis_id and i.created_by = (select auth.uid())
-));
-create policy experiments_update_by_idea_owner on public.experiments for update to authenticated
-using (exists (
-  select 1 from public.hypotheses h
-  join public.ideas i on i.id = h.idea_id
-  where h.id = experiments.hypothesis_id and i.created_by = (select auth.uid())
-))
-with check (exists (
-  select 1 from public.hypotheses h
-  join public.ideas i on i.id = h.idea_id
-  where h.id = experiments.hypothesis_id and i.created_by = (select auth.uid())
-));
+create policy experiments_select_by_idea_owner
+on public.experiments for select to authenticated
+using (
+  exists (
+    select 1
+    from public.hypotheses h
+    join public.ideas i on i.id = h.idea_id
+    where h.id = experiments.hypothesis_id
+      and i.created_by = (select auth.uid())
+  )
+);
+
+create policy experiments_insert_by_idea_owner
+on public.experiments for insert to authenticated
+with check (
+  exists (
+    select 1
+    from public.hypotheses h
+    join public.ideas i on i.id = h.idea_id
+    where h.id = experiments.hypothesis_id
+      and i.created_by = (select auth.uid())
+  )
+);
+
+create policy experiments_update_by_idea_owner
+on public.experiments for update to authenticated
+using (
+  exists (
+    select 1
+    from public.hypotheses h
+    join public.ideas i on i.id = h.idea_id
+    where h.id = experiments.hypothesis_id
+      and i.created_by = (select auth.uid())
+  )
+)
+with check (
+  exists (
+    select 1
+    from public.hypotheses h
+    join public.ideas i on i.id = h.idea_id
+    where h.id = experiments.hypothesis_id
+      and i.created_by = (select auth.uid())
+  )
+);
