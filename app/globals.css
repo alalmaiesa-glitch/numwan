@@ -1288,3 +1288,73 @@ button:hover>.transitionArrow,
     grid-template-columns:40px minmax(0,1fr) 40px;
   }
 }
+
+
+/* Data room action visibility */
+.roomActionButton,
+.roomAccessButton,
+.roomRevokeButton{
+  border:1px solid var(--ink);
+  border-radius:3px;
+  background:transparent;
+  color:var(--ink);
+  min-height:44px;
+  padding:0 14px;
+  font-family:var(--font-arabic-body),sans-serif;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:
+    background .18s ease,
+    color .18s ease,
+    border-color .18s ease,
+    transform .18s ease;
+}
+.roomActionButton{
+  background:var(--ink);
+  color:var(--ivory);
+  border-color:var(--ink);
+  padding:0 6px 0 12px;
+}
+.roomActionButton:hover,
+.roomAccessButton:hover,
+.roomRevokeButton:hover{
+  background:var(--copper);
+  color:var(--ivory);
+  border-color:var(--copper);
+  transform:translateY(-1px);
+}
+.roomAccessButton{
+  min-width:118px;
+  background:var(--white);
+}
+.roomRevokeButton{
+  min-width:108px;
+  min-height:38px;
+  font-size:12px;
+  background:transparent;
+}
+.roomActionButton:disabled,
+.roomAccessButton:disabled,
+.roomRevokeButton:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+  transform:none;
+}
+.documentAccess form>div{
+  align-items:stretch;
+}
+.documentAccess form>div .roomAccessButton{
+  border:1px solid var(--ink);
+}
+.grantList>div .roomRevokeButton{
+  border:1px solid var(--ink);
+}
+@media(max-width:760px){
+  .roomAccessButton{
+    min-width:104px;
+  }
+  .roomActionButton{
+    min-width:108px;
+  }
+}
