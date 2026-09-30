@@ -194,15 +194,18 @@ export default function DataRoomManager({
             <h2>رفع إلى غرفة البيانات</h2>
             <p>يُحفظ الملف في التخزين الخاص، ولا يصبح عامًا عند رفعه.</p>
           </div>
+
           <form ref={uploadForm} onSubmit={uploadDocument} className="form">
             <div className="field">
               <label>عنوان المستند</label>
               <input name="title" required />
             </div>
+
             <div className="field">
               <label>الملف</label>
               <input name="file" type="file" required />
             </div>
+
             <button className="button" type="submit" disabled={busy === "upload"}>
               {busy === "upload" ? "جارٍ الرفع…" : "رفع المستند"}
             </button>
@@ -212,33 +215,58 @@ export default function DataRoomManager({
 
       {message ? <p className="roomMessage">{message}</p> : null}
 
-      <section className="documentList">
+      <section className="documentList documentCardList">
         {documents.length ? (
           documents.map((document, index) => (
-            <article className="documentCard" key={document.id}>
-              <div className="documentRow">
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <div>
-                  <strong>{document.title}</strong>
-                  <small>{new Date(document.created_at).toLocaleDateString("ar-SA")}</small>
+            <article className="documentCard organizedDocumentCard" key={document.id}>
+              <header className="documentCardHead">
+                <div className="documentCardInfo">
+                  <span className="documentIndex">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <div className="documentTitleBlock">
+                    <strong>{document.title}</strong>
+                    <small>{new Date(document.created_at).toLocaleDateString("ar-SA")}</small>
+                  </div>
                 </div>
-                <i>خاص</i>
-                <button
-                  className="documentAction roomActionButton"
-                  type="button"
-                  onClick={() => downloadDocument(document)}
-                  disabled={busy === "download:" + document.id}
-                >
-                  {busy === "download:" + document.id ? <span>جارٍ…</span> : <><span>تنزيل</span><TransitionArrow/></>}
-                </button>
-              </div>
+
+                <div className="documentHeadActions">
+                  <span className="documentBadge">خاص</span>
+
+                  <button
+                    className="documentAction roomActionButton"
+                    type="button"
+                    onClick={() => downloadDocument(document)}
+                    disabled={busy === "download:" + document.id}
+                  >
+                    {busy === "download:" + document.id ? (
+                      <span>جارٍ…</span>
+                    ) : (
+                      <>
+                        <span>تنزيل</span>
+                        <TransitionArrow />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </header>
 
               {isOwner ? (
-                <div className="documentAccess">
-                  <form onSubmit={(event) => grantAccess(event, document.id)}>
-                    <label>منح الوصول بالبريد</label>
-                    <div>
-                      <input name="email" type="email" placeholder="name@example.com" required />
+                <div className="documentAccessBlock">
+                  <section className="documentAccessSection">
+                    <span className="sectionMiniTitle">منح الوصول بالبريد</span>
+
+                    <form
+                      className="documentGrantForm"
+                      onSubmit={(event) => grantAccess(event, document.id)}
+                    >
+                      <input
+                        name="email"
+                        type="email"
+                        placeholder="name@example.com"
+                        required
+                      />
                       <button
                         className="roomAccessButton"
                         type="submit"
@@ -246,28 +274,40 @@ export default function DataRoomManager({
                       >
                         منح الوصول
                       </button>
-                    </div>
-                  </form>
+                    </form>
+                  </section>
 
-                  <div className="grantList">
-                    {document.grants.length ? (
-                      document.grants.map((grant) => (
-                        <div key={grant.user_id}>
-                          <span>{grant.email}</span>
-                          <button
-                            className="roomRevokeButton"
-                            type="button"
-                            onClick={() => revokeAccess(document.id, grant.user_id)}
-                            disabled={busy === "revoke:" + document.id + ":" + grant.user_id}
-                          >
-                            إلغاء الوصول
-                          </button>
+                  <section className="documentAccessSection">
+                    <span className="sectionMiniTitle">صلاحيات الوصول الحالية</span>
+
+                    <div className="grantList organizedGrantList">
+                      {document.grants.length ? (
+                        document.grants.map((grant) => (
+                          <div className="grantRow" key={grant.user_id}>
+                            <div className="grantIdentity">
+                              <span>{grant.email}</span>
+                              <small>وصول إلى هذا المستند فقط</small>
+                            </div>
+
+                            <button
+                              className="roomRevokeButton"
+                              type="button"
+                              onClick={() => revokeAccess(document.id, grant.user_id)}
+                              disabled={
+                                busy === "revoke:" + document.id + ":" + grant.user_id
+                              }
+                            >
+                              إلغاء الوصول
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="grantEmpty">
+                          لا توجد صلاحيات وصول إضافية لهذا المستند.
                         </div>
-                      ))
-                    ) : (
-                      <small>لا توجد صلاحيات وصول إضافية لهذا المستند.</small>
-                    )}
-                  </div>
+                      )}
+                    </div>
+                  </section>
                 </div>
               ) : null}
             </article>
@@ -276,7 +316,11 @@ export default function DataRoomManager({
           <div className="editorialEmpty">
             <span>00</span>
             <h2>لا توجد مستندات متاحة.</h2>
-            <p>{isOwner ? "ارفع أول مستند إلى غرفة البيانات." : "لم يُمنح حسابك وصولًا إلى مستندات هنا."}</p>
+            <p>
+              {isOwner
+                ? "ارفع أول مستند إلى غرفة البيانات."
+                : "لم يُمنح حسابك وصولًا إلى مستندات هنا."}
+            </p>
           </div>
         )}
       </section>
