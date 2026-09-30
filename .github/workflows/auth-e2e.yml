@@ -42,4 +42,4 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run auth E2E
-        run: npx playwright test tests/auth-e2e.spec.ts --project=chromium
+        run: npx playwright test tests/auth-e2e.spec.ts
