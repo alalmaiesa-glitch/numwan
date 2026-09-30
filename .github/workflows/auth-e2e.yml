@@ -1,0 +1,45 @@
+name: Numwan Auth E2E
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/login/**"
+      - "components/logout-button.tsx"
+      - "proxy.ts"
+      - "tests/auth-e2e.spec.ts"
+      - ".github/workflows/auth-e2e.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  auth-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      E2E_BASE_URL: https://numwan.vercel.app
+      NUMWAN_E2E_EMAIL: ${{ secrets.NUMWAN_E2E_EMAIL }}
+      NUMWAN_E2E_PASSWORD: ${{ secrets.NUMWAN_E2E_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install app dependencies
+        run: npm ci
+
+      - name: Install Playwright test runner
+        run: npm install --no-save @playwright/test
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run auth E2E
+        run: npx playwright test tests/auth-e2e.spec.ts --project=chromium
