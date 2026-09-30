@@ -1,0 +1,2 @@
+import PublicPageShellEn from "@/components/public-page-shell-en";
+export default function ContactEn(){return <PublicPageShellEn><section className="staticHero shellWide contactHero"><span className="sectionKicker">CONTACT</span><h1>The public contact channel<br/>will be published before launch.</h1><p>V1 does not currently define an approved public contact channel or contact form, so no placeholder address or unverified form has been added. The official channel will appear here once approved.</p></section></PublicPageShellEn>}

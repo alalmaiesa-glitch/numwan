@@ -516,3 +516,45 @@ button{border:0}
   .labCounts{grid-template-columns:repeat(3,1fr)}.labOverview{grid-template-columns:1fr}.overviewDatum{border-left:0}
   .recordRow{grid-template-columns:44px 1fr}.recordRow i,.recordRow b{grid-column:2}.deferredModules{grid-template-columns:1fr}
 }
+
+
+/* Language separation */
+.headerActions,.footerActions{display:flex;align-items:center;gap:22px;font-size:13px}
+.headerActions>a:first-child,.footerActions>a:first-child{color:inherit;opacity:.68}
+.publicSite:not(.englishSite) .sectionKicker,.workspace .sectionKicker{
+  letter-spacing:0;text-transform:none;font-family:var(--font-arabic-body),sans-serif
+}
+.publicSite:not(.englishSite) .visualTitle strong,
+.publicSite:not(.englishSite) .holdingVisual b,
+.publicSite:not(.englishSite) .anatomyRow strong{
+  font-family:var(--font-arabic-display),sans-serif;letter-spacing:-.035em
+}
+.publicSite:not(.englishSite) .visualTitle span,
+.publicSite:not(.englishSite) .visualGrid span,
+.publicSite:not(.englishSite) .assetHeroVisual>p,
+.publicSite:not(.englishSite) .holdingVisual span,
+.publicSite:not(.englishSite) .holdingVisual small,
+.publicSite:not(.englishSite) .footerBrand small{
+  font-family:var(--font-arabic-body),sans-serif;letter-spacing:0
+}
+.englishSite{direction:ltr;font-family:var(--font-latin),sans-serif}
+.englishSite .editorialHeroCopy h1,
+.englishSite .sectionHeading h2,
+.englishSite .manifestoSection h2,
+.englishSite .methodIntro h2,
+.englishSite .closingSection h2,
+.englishSite .holdingCopy h3,
+.englishSite .staticHero h1,
+.englishSite .staticEditorial h2,
+.englishSite .legalPage>h1,
+.englishSite .legalSections h2{
+  font-family:var(--font-latin),sans-serif;letter-spacing:-.045em
+}
+.englishSite .sectionKicker{font-family:var(--font-latin),sans-serif}
+.englishSite .methodStep h3{font-family:var(--font-latin),sans-serif}
+.englishSite .publicFooter{text-align:left}
+.englishSite .publicFooter nav{direction:ltr}
+@media(max-width:760px){
+  .headerActions{gap:12px}.headerActions>a:first-child{font-size:12px}
+  .footerActions{align-items:flex-start;flex-direction:column;gap:8px}
+}

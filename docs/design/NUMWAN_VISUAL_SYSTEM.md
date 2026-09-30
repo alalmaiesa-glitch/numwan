@@ -3,7 +3,14 @@ Status: LOCKED for V1 presentation layer
 Direction: Editorial — Premium — Analytical
 Product framing: Curated Business Assets Platform / منصة أصول أعمال منتقاة ومطوّرة
 
-Core palette:
+## Language separation
+- Arabic routes use Arabic user-facing content only.
+- English user-facing content lives under /en.
+- Technical database enum values may remain English internally, but Arabic interfaces must translate them for display.
+- Codes such as asset codes and disclosure levels may remain as codes.
+- Do not mix English section labels, metadata, or decorative copy into Arabic pages.
+
+## Core palette
 - Ink #14191B
 - Warm Ivory #F4F1E9
 - Mineral Green #304D45
@@ -11,12 +18,12 @@ Core palette:
 - Soft Stone #D8D3C9
 - White #FFFFFF
 
-Typography:
+## Typography
 - Arabic body/data: IBM Plex Sans Arabic
 - Arabic display: Alexandria 500–600
 - English/data: Manrope
 
-Rules:
+## Rules
 - Editorial composition, large typography, generous whitespace, restrained motion, thin rules.
 - No marketplace/store visual language, heavy shadows, glass effects, neon AI, random floating 3D, or generic business stock photography.
 - Radius generally 0–8px.

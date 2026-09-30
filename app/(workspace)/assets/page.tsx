@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { assetStatusAr, labelOf } from "@/lib/labels-ar";
+
 export default async function AssetsPage(){
- const supabase=await createClient(); const {data:assets}=await supabase.from("assets").select("id,asset_code,title,summary,status,disclosure_level,updated_at").order("updated_at",{ascending:false});
- return <><header className="workspacePageHead"><span className="sectionKicker">Portfolio</span><h1>الأصول</h1><p>الأصول التي تملك صلاحية الوصول إليها. تغيير الحالة يبقى ضمن المسار المدقق المعتمد.</p></header><section className="assetWorkspaceList">{assets?.length?assets.map((asset,index)=><Link className="assetWorkspaceRow" href={`/assets/${asset.id}`} key={asset.id}><span className="assetWorkspaceIndex">{String(index+1).padStart(2,"0")}</span><div className="assetWorkspaceMain"><small>{asset.asset_code||"ASSET"}</small><h2>{asset.title}</h2><p>{asset.summary||"لا يوجد وصف مختصر لهذا الأصل."}</p></div><div className="assetWorkspaceMeta"><div><span>الحالة</span><strong>{asset.status}</strong></div><div><span>الإفصاح</span><strong>{asset.disclosure_level}</strong></div></div></Link>):<div className="editorialEmpty"><span>00</span><h2>لا توجد أصول متاحة لهذا الحساب.</h2><p>ستظهر الأصول هنا عند انتقالها إلى المسار المعتمد داخل V1.</p></div>}</section></>
+ const supabase=await createClient();
+ const {data:assets}=await supabase.from("assets").select("id,asset_code,title,summary,status,disclosure_level,updated_at").order("updated_at",{ascending:false});
+ return <><header className="workspacePageHead"><span className="sectionKicker">المحفظة</span><h1>الأصول</h1><p>الأصول التي تملك صلاحية الوصول إليها. تغيير الحالة يبقى ضمن المسار المدقق المعتمد.</p></header>
+ <section className="assetWorkspaceList">{assets?.length?assets.map((asset,index)=><Link className="assetWorkspaceRow" href={`/assets/${asset.id}`} key={asset.id}><span className="assetWorkspaceIndex">{String(index+1).padStart(2,"0")}</span><div className="assetWorkspaceMain"><small>{asset.asset_code||"أصل"}</small><h2>{asset.title}</h2><p>{asset.summary||"لا يوجد وصف مختصر لهذا الأصل."}</p></div><div className="assetWorkspaceMeta"><div><span>الحالة</span><strong>{labelOf(assetStatusAr,asset.status)}</strong></div><div><span>الإفصاح</span><strong>{asset.disclosure_level}</strong></div></div></Link>):<div className="editorialEmpty"><span>00</span><h2>لا توجد أصول متاحة لهذا الحساب.</h2><p>ستظهر الأصول هنا عند انتقالها إلى المسار المعتمد في الإصدار الأول.</p></div>}</section></>
 }
