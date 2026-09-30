@@ -32,7 +32,7 @@ export default function DataRoomManager({
   const uploadForm = useRef<HTMLFormElement>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const supabase = createClient();
+  const [supabase] = useState(() => createClient());
 
   useEffect(() => {
     let active = true;
