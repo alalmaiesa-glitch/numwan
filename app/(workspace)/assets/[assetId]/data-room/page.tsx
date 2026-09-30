@@ -4,6 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import DataRoomManager from "@/components/data-room-manager";
 import TransitionArrow from "@/components/transition-arrow";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type Grant = {
   user_id: string;
   email: string;
