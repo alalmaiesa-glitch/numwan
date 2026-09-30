@@ -18,19 +18,30 @@ export default async function WorkspaceLayout({
       <aside className="sidebar">
         <Link href="/dashboard" className="brand">
           <span className="brandMark">ن</span>
-          <span><strong>نُموان</strong><small>مساحة العمل V1</small></span>
+          <span className="brandCopy"><strong>نُموان</strong><small>NUMWAN</small></span>
         </Link>
-        <nav className="sidebarNav">
-          <Link href="/dashboard">لوحة التحكم</Link>
-          <Link href="/vault">Vault الأفكار</Link>
-          <Link href="/assets">الأصول</Link>
-          <Link href="/deals">الصفقات</Link>
+
+        <span className="sidebarLabel">WORKSPACE</span>
+
+        <nav className="sidebarNav" aria-label="مساحة العمل">
+          <Link href="/dashboard"><span>لوحة التحكم</span><span className="navCode">01</span></Link>
+          <Link href="/vault"><span>Vault الأفكار</span><span className="navCode">02</span></Link>
+          <Link href="/assets"><span>الأصول</span><span className="navCode">03</span></Link>
+          <Link href="/deals"><span>الصفقات</span><span className="navCode">04</span></Link>
         </nav>
-        <div className="sidebarFoot"><small>{email}</small></div>
+
+        <div className="sidebarFoot">
+          <span className="sidebarFootLabel">الحساب الحالي</span>
+          <small>{email}</small>
+        </div>
       </aside>
+
       <section className="content">
         <header className="workspaceHeader">
-          <span className="muted">نُموان V1</span>
+          <div className="workspaceHeaderTitle">
+            <strong>نظام تطوير الأصول</strong>
+            <small>مساحة العمل · V1</small>
+          </div>
           <LogoutButton />
         </header>
         <main className="workspaceMain">{children}</main>
