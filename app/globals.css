@@ -1311,9 +1311,9 @@ button:hover>.transitionArrow,
     transform .18s ease;
 }
 .roomActionButton{
-  background:var(--ink);
+  background:var(--mineral);
   color:var(--ivory);
-  border-color:var(--ink);
+  border-color:var(--mineral);
   padding:0 6px 0 12px;
 }
 .roomActionButton:hover,
