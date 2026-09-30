@@ -7,8 +7,18 @@ alter table public.assets
 alter table public.assets
   add constraint assets_status_v1 check (
     status in (
-      'IDEA','RESEARCH','LAB','DEVELOPMENT','READY','LISTED',
-      'INTEREST','NEGOTIATION','RESERVED','SOLD','LICENSED','ARCHIVED'
+      'IDEA',
+      'RESEARCH',
+      'LAB',
+      'DEVELOPMENT',
+      'READY',
+      'LISTED',
+      'INTEREST',
+      'NEGOTIATION',
+      'RESERVED',
+      'SOLD',
+      'LICENSED',
+      'ARCHIVED'
     )
   );
 
@@ -27,8 +37,17 @@ alter table public.deals
   add column status text not null default 'NEW'
   check (
     status in (
-      'NEW','QUALIFIED','DATA_ROOM','INTEREST','OFFER','NEGOTIATION',
-      'RESERVED','AGREEMENT','SOLD','LICENSED','CLOSED'
+      'NEW',
+      'QUALIFIED',
+      'DATA_ROOM',
+      'INTEREST',
+      'OFFER',
+      'NEGOTIATION',
+      'RESERVED',
+      'AGREEMENT',
+      'SOLD',
+      'LICENSED',
+      'CLOSED'
     )
   );
 
