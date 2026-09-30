@@ -3,6 +3,7 @@
 import { FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import TransitionArrow from "@/components/transition-arrow";
 
 type Grant = {
   user_id: string;
@@ -228,7 +229,7 @@ export default function DataRoomManager({
                   onClick={() => downloadDocument(document)}
                   disabled={busy === "download:" + document.id}
                 >
-                  {busy === "download:" + document.id ? "جارٍ…" : "تنزيل ↗"}
+                  {busy === "download:" + document.id ? <span>جارٍ…</span> : <><span>تنزيل</span><TransitionArrow/></>}
                 </button>
               </div>
 

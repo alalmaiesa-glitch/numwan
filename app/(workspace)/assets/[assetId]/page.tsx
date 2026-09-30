@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { assetStatusAr, labelOf } from "@/lib/labels-ar";
+import TransitionArrow from "@/components/transition-arrow";
 
 const assetStages=["IDEA","RESEARCH","LAB","DEVELOPMENT","READY","LISTED","INTEREST","NEGOTIATION","RESERVED","SOLD","LICENSED","ARCHIVED"];
 
@@ -23,8 +24,8 @@ export default async function AssetDetailPage({params}:{params:Promise<{assetId:
  <section className="assetDetailVisual"><span>{asset.asset_code||"أصل / نُموان"}</span><strong>أصل<br/>مطوّر</strong><i/><small>جاهز للتقييم / وصول منضبط</small></section>
  <section className="assetNarrative"><div className="assetNarrativeTitle"><span className="sectionKicker">ملف الأصل</span><h2>المعلومات المعتمدة في الإصدار الأول</h2></div><div className="assetNarrativeBody"><div className="narrativeRow"><span>01</span><div><h3>الملخص</h3><p>{asset.summary||"لم يُسجل ملخص لهذا الأصل بعد."}</p></div></div><div className="narrativeRow"><span>02</span><div><h3>الحالة الحالية</h3><p>{labelOf(assetStatusAr,asset.status)}</p></div></div><div className="narrativeRow"><span>03</span><div><h3>مستوى الإفصاح</h3><p>{asset.disclosure_level}</p></div></div></div></section>
  <section className="statusJourney"><span className="sectionKicker">دورة حياة الأصل</span><div className="statusTrack">{assetStages.map((stage,index)=><div className={`statusNode ${index<stageIndex?"done":""} ${index===stageIndex?"current":""}`} key={stage}><span>{String(index+1).padStart(2,"0")}</span><strong>{labelOf(assetStatusAr,stage)}</strong></div>)}</div></section>
- <section className="assetNarrative"><div className="assetNarrativeTitle"><span className="sectionKicker">المصدر</span><h2>أصل مرتبط بسياقه.</h2></div><div className="assetNarrativeBody"><div className="narrativeRow"><span>00</span><div><h3>الفرصة المصدر</h3>{sourceIdea?<p><Link href={`/lab/${sourceIdea.id}`}>{sourceIdea.title} ↗</Link></p>:<p>لم يُربط هذا الأصل بفرصة مصدر.</p>}</div></div></div></section>
- <section className="detailActionGrid"><Link href={`/assets/${asset.id}/data-room`}><span>غرفة البيانات</span><strong>المستندات والوصول</strong><p>{documents?.length??0} مستندات متاحة وفق صلاحياتك.</p><i>↗</i></Link><Link href="/deals"><span>الصفقات</span><strong>مسار الصفقات</strong><p>{deals?.length??0} صفقات مرتبطة ظاهرة لحسابك.</p><i>↗</i></Link></section>
+ <section className="assetNarrative"><div className="assetNarrativeTitle"><span className="sectionKicker">المصدر</span><h2>أصل مرتبط بسياقه.</h2></div><div className="assetNarrativeBody"><div className="narrativeRow"><span>00</span><div><h3>الفرصة المصدر</h3>{sourceIdea?<p><Link className="inlineTransitionLink" href={`/lab/${sourceIdea.id}`}><span>{sourceIdea.title}</span><TransitionArrow/></Link></p>:<p>لم يُربط هذا الأصل بفرصة مصدر.</p>}</div></div></div></section>
+ <section className="detailActionGrid"><Link href={`/assets/${asset.id}/data-room`}><span>غرفة البيانات</span><strong>المستندات والوصول</strong><p>{documents?.length??0} مستندات متاحة وفق صلاحياتك.</p><TransitionArrow/></Link><Link href="/deals"><span>الصفقات</span><strong>مسار الصفقات</strong><p>{deals?.length??0} صفقات مرتبطة ظاهرة لحسابك.</p><TransitionArrow/></Link></section>
  <aside className="schemaNotice"><strong>ملاحظة بنيوية</strong><p>حقول «الفرصة، المشكلة، الحل، السوق، النموذج التجاري، نموذج الإيراد» ليست حقولًا في بنية الأصل الحالية في الإصدار الأول، لذلك لم تُختلق ولم تُضف ضمن إعادة التصميم.</p></aside>
  </>
 }

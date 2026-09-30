@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import DataRoomManager from "@/components/data-room-manager";
+import TransitionArrow from "@/components/transition-arrow";
 
 type Grant = {
   user_id: string;
@@ -46,7 +47,7 @@ export default async function DataRoomPage({params}:{params:Promise<{assetId:str
     </header>
 
     <div className="roomMeta">
-      {asset.is_owner?<Link href={`/assets/${asset.asset_id}`}>→ العودة إلى الأصل</Link>:<Link href="/dashboard">→ لوحة التحكم</Link>}
+      {asset.is_owner?<Link className="roomBackLink" href={`/assets/${asset.asset_id}`}><TransitionArrow direction="back"/><span>العودة إلى الأصل</span></Link>:<Link className="roomBackLink" href="/dashboard"><TransitionArrow direction="back"/><span>لوحة التحكم</span></Link>}
       <span>مستوى الإفصاح: <strong>{asset.disclosure_level}</strong></span>
     </div>
 
