@@ -110,8 +110,8 @@ export default async function LabPage({
       <div className="labModuleHead"><span>06</span><div><small>الانتقال</small><h2>تحويل الفرصة إلى أصل</h2><p>ينشئ أصلًا مرتبطًا بهذه الفرصة بحالة «تطوير». يحتفظ نُموان ببيانات المختبر كاملة، ولا يعني التحويل نشر الأصل للعامة.</p></div></div>
       <div className="labModuleBody">
         {linkedAsset
-          ? <div className="recordList"><Link className="recordRow" href={`/assets/${linkedAsset.id}`}><span>أصل</span><p>تم تحويل هذه الفرصة إلى أصل.</p><i>{labelOf(assetStatusAr,linkedAsset.status)}</i><b>فتح الأصل ↗</b></Link></div>
-          : <form action={convertIdeaToAsset} className="form"><input type="hidden" name="idea_id" value={ideaId}/><p>التحويل متاح لمالك الفرصة فقط، وينفذ مرة واحدة لهذه الفرصة.</p><div><button className="button" type="submit">تحويل إلى أصل ↗</button></div></form>}
+          ? <div className="assetTransitionDone"><div><span>تم التحويل</span><strong>هذه الفرصة مرتبطة الآن بأصل بحالة {labelOf(assetStatusAr,linkedAsset.status)}.</strong></div><Link className="assetTransitionAction secondary" href={`/assets/${linkedAsset.id}`}><span>فتح الأصل</span><b aria-hidden="true">↗</b></Link></div>
+          : <form action={convertIdeaToAsset} className="assetTransitionForm"><input type="hidden" name="idea_id" value={ideaId}/><p>التحويل متاح لمالك الفرصة فقط، وينفذ مرة واحدة لهذه الفرصة.</p><button className="assetTransitionAction" type="submit"><span>تحويل الفرصة إلى أصل</span><b aria-hidden="true">↗</b></button></form>}
       </div>
     </section>
   </>
