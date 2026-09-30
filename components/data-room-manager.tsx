@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import TransitionArrow from "@/components/transition-arrow";
@@ -33,6 +33,50 @@ export default function DataRoomManager({
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const supabase = createClient();
+
+  useEffect(() => {
+    let active = true;
+
+    async function verifyCurrentAccess() {
+      const { data, error } = await supabase.rpc("get_data_room_context_v1", {
+        p_asset_id: assetId,
+      });
+
+      if (!active) return;
+
+      if (error || !data?.length) {
+        router.replace("/dashboard?notice=data-room-access-revoked");
+        router.refresh();
+      }
+    }
+
+    void verifyCurrentAccess();
+
+    const onPageShow = () => {
+      void verifyCurrentAccess();
+    };
+
+    const onFocus = () => {
+      void verifyCurrentAccess();
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void verifyCurrentAccess();
+      }
+    };
+
+    window.addEventListener("pageshow", onPageShow);
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    return () => {
+      active = false;
+      window.removeEventListener("pageshow", onPageShow);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [assetId, router, supabase]);
 
   function cleanFileName(name: string) {
     const cleaned = name
