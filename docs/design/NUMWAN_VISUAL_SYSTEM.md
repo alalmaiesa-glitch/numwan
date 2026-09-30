@@ -30,3 +30,9 @@ Product framing: Curated Business Assets Platform / منصة أصول أعمال
 - Public assets must never be invented to fill layouts.
 - Do not weaken RLS or modify V1 business semantics for presentation.
 - This system does not change Product Specification, deal lifecycle, Data Room permissions, disclosure, or database semantics.
+
+## Arabic terminology
+- Avoid the literal phrase «أصل أعمال» as a standalone display label.
+- Homepage editorial visual: «فرصة مطوّرة».
+- Asset detail editorial visual: «أصل مطوّر».
+- Use «أصول الأعمال» only in explanatory prose when the context makes the concept clear.
