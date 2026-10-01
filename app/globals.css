@@ -1587,3 +1587,210 @@ button:hover>.transitionArrow,
     width:100%;
   }
 }
+
+
+/* ===== Deals Operational Workflow V1 ===== */
+.detailActionForm{
+  min-height:100%;
+}
+.detailActionForm button{
+  position:relative;
+  width:100%;
+  min-height:100%;
+  padding:28px 82px 28px 28px;
+  border:1px solid var(--line);
+  border-radius:0;
+  background:transparent;
+  color:var(--ink);
+  display:grid;
+  align-content:start;
+  gap:6px;
+  text-align:right;
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;
+}
+.detailActionForm button:hover{
+  background:rgba(255,255,255,.46);
+  border-color:rgba(20,25,27,.32);
+  transform:translateY(-1px);
+}
+.detailActionForm button>span{
+  font-size:12px;
+  color:var(--copper);
+  font-weight:700;
+}
+.detailActionForm button>strong{
+  font-size:20px;
+  font-weight:600;
+}
+.detailActionForm button>p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+}
+.detailActionForm button>.transitionArrow{
+  position:absolute;
+  left:28px;
+  top:28px;
+}
+.detailActionForm button:hover>.transitionArrow{
+  border-color:var(--copper);
+  background:var(--copper);
+  color:var(--ivory);
+}
+
+.dealParticipantsPanel{
+  margin-top:72px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:48px 0;
+  display:grid;
+  grid-template-columns:minmax(250px,.72fr) minmax(0,1.28fr);
+  gap:64px;
+}
+.dealParticipantsHead h2{
+  font-family:var(--font-arabic-display),sans-serif;
+  font-size:34px;
+  line-height:1.35;
+  font-weight:500;
+  margin:8px 0 12px;
+}
+.dealParticipantsHead p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.9;
+}
+.dealParticipantForm{
+  grid-column:2;
+  display:grid;
+  gap:9px;
+}
+.dealParticipantForm label{
+  font-size:13px;
+  font-weight:700;
+}
+.dealParticipantForm>div{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:9px;
+}
+.dealParticipantForm input{
+  min-height:46px;
+  border:1px solid var(--stone);
+  border-radius:3px;
+  background:var(--white);
+  padding:0 13px;
+  outline:none;
+}
+.dealParticipantForm input:focus{
+  border-color:var(--mineral);
+}
+.dealParticipantForm button,
+.dealParticipantRow button{
+  min-height:46px;
+  padding:0 16px;
+  border:1px solid var(--ink);
+  border-radius:3px;
+  background:var(--white);
+  color:var(--ink);
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
+}
+.dealParticipantForm button:hover,
+.dealParticipantRow button:hover{
+  background:var(--copper);
+  border-color:var(--copper);
+  color:var(--ivory);
+  transform:translateY(-1px);
+}
+.dealParticipantForm button:disabled,
+.dealParticipantRow button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+  transform:none;
+}
+.dealParticipantMessage{
+  grid-column:2;
+  margin:0;
+  padding:10px 12px;
+  border-right:3px solid var(--mineral);
+  background:rgba(48,77,69,.06);
+  font-size:13px;
+}
+.dealParticipantList{
+  grid-column:2;
+  border-top:1px solid var(--line);
+}
+.dealParticipantRow{
+  min-height:72px;
+  display:grid;
+  grid-template-columns:44px minmax(0,1fr) auto;
+  gap:16px;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+}
+.dealParticipantRow>span{
+  font-family:var(--font-latin),sans-serif;
+  font-size:12px;
+  color:var(--copper);
+}
+.dealParticipantRow>div{
+  min-width:0;
+  display:grid;
+  gap:2px;
+}
+.dealParticipantRow strong{
+  font-size:14px;
+  overflow-wrap:anywhere;
+}
+.dealParticipantRow small{
+  color:var(--muted);
+  font-size:11px;
+}
+.dealParticipantRow i{
+  font-style:normal;
+  color:var(--mineral);
+  font-size:12px;
+  font-weight:700;
+}
+.dealParticipantsEmpty{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  color:var(--muted);
+  font-size:13px;
+}
+@media(max-width:900px){
+  .dealParticipantsPanel{
+    grid-template-columns:1fr;
+    gap:28px;
+  }
+  .dealParticipantForm,
+  .dealParticipantMessage,
+  .dealParticipantList{
+    grid-column:1;
+  }
+}
+@media(max-width:760px){
+  .detailActionForm button{
+    padding-left:70px;
+  }
+  .detailActionForm button>.transitionArrow{
+    left:18px;
+    top:22px;
+  }
+  .dealParticipantForm>div{
+    grid-template-columns:1fr;
+  }
+  .dealParticipantRow{
+    grid-template-columns:34px minmax(0,1fr);
+  }
+  .dealParticipantRow button,
+  .dealParticipantRow i{
+    grid-column:2;
+    justify-self:start;
+  }
+}
