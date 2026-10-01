@@ -3,9 +3,20 @@ import { createClient } from "@/lib/supabase/server";
 import { dealStatusAr, labelOf } from "@/lib/labels-ar";
 import TransitionArrow from "@/components/transition-arrow";
 
+type DealListItem = {
+  deal_id: string;
+  status: string;
+  created_at: string;
+  asset_id: string;
+  asset_code: string | null;
+  asset_title: string;
+  is_owner: boolean;
+};
+
 export default async function DealsPage(){
  const supabase=await createClient();
- const {data:deals}=await supabase.rpc("list_deals_v1");
+ const {data}=await supabase.rpc("list_deals_v1");
+ const deals=(data??[]) as DealListItem[];
 
  return <>
    <header className="workspacePageHead">
@@ -15,8 +26,8 @@ export default async function DealsPage(){
    </header>
 
    <section className="dealList">
-     {deals?.length
-       ? deals.map((deal,index)=>
+     {deals.length
+       ? deals.map((deal:DealListItem,index:number)=>
          <Link href={`/deals/${deal.deal_id}`} className="dealRow" key={deal.deal_id}>
            <span>{String(index+1).padStart(2,"0")}</span>
            <div><small>{deal.asset_code||"أصل"}</small><strong>{deal.asset_title||"أصل"}</strong></div>
