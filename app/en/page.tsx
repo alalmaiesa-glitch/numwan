@@ -18,7 +18,7 @@ export default async function EnglishHomePage(){
  return <main className="publicSite englishSite" lang="en" dir="ltr">
   <section className="editorialHero"><PublicHeaderEn signedIn={signedIn}/>
    <div className="editorialHeroGrid shellWide">
-    <div className="editorialHeroCopy"><span className="sectionKicker light">CURATED BUSINESS ASSETS PLATFORM</span><h1>Ideas built<br/>to become ventures.</h1><p>Numwan develops business opportunities and assets ready to move from research toward execution.</p><div className="heroActions"><a className="editorialCta lightCta" href="#assets">Explore assets <span>↗</span></a><a className="quietCta" href="#method">How is an asset built?</a></div></div>
+    <div className="editorialHeroCopy"><span className="sectionKicker light">EXECUTION-READY BUSINESS ASSETS</span><h1>Ideas built<br/>to become ventures.</h1><p>Numwan develops digital business assets ready for evaluation and use, from datasets and models to execution blueprints and complete packs.</p><div className="heroActions"><a className="editorialCta lightCta" href="/en/store">Explore the store <span>↗</span></a><a className="quietCta" href="#method">How is an asset built?</a></div></div>
     <div className="assetHeroVisual"><div className="visualIndex">ASSET / 01</div><div className="visualTitle"><span>NUMWAN</span><strong>BUSINESS<br/>ASSET</strong></div><div className="visualGrid"><span>RESEARCH</span><span>MODEL</span><span>PRODUCT</span><span>ECONOMICS</span><span>EVIDENCE</span><span>RIGHTS</span></div><div className="visualRule"/><p>FROM POSSIBILITY<br/>TO EVALUABLE ASSET</p></div>
    </div>
   </section>
@@ -26,7 +26,7 @@ export default async function EnglishHomePage(){
   <section id="about" className="manifestoSection"><div className="shellWide manifestoGrid"><span className="sectionKicker">WHAT IS NUMWAN?</span><div><h2>We do not present an idea<br/>before building around it.</h2><p>Each asset begins with research and validation, followed by business model, product, economics, execution roadmap, evidence, and an organized package that supports evaluation.</p></div></div></section>
   <section className="assetAnatomy shellWide"><div className="sectionHeading compact"><span className="sectionIndex">02</span><div><span className="sectionKicker">INSIDE EACH ASSET</span><h2>A package built for evaluation.</h2></div></div><div className="anatomyList">{assetContents.map((item,index)=><div className="anatomyRow" key={item}><span>{String(index+1).padStart(2,"0")}</span><strong>{item}</strong><i>↗</i></div>)}</div></section>
   <section id="method" className="methodSection"><div className="shellWide"><div className="methodIntro"><span className="sectionIndex inverted">03</span><div><span className="sectionKicker light">NUMWAN METHOD</span><h2>How does possibility<br/>become an asset?</h2></div></div><div className="methodTrack">{methodology.map(([number,title,copy])=><article className="methodStep" key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
-  <section className="closingSection shellWide"><p className="sectionKicker">NUMWAN</p><h2>The next venture<br/>may not start from zero.</h2><a className="editorialCta darkCta" href="#assets">Explore assets <span>↗</span></a></section>
+  <section className="closingSection shellWide"><p className="sectionKicker">NUMWAN</p><h2>The next venture<br/>may not start from zero.</h2><a className="editorialCta darkCta" href="/en/store">Explore the store <span>↗</span></a></section>
   <PublicFooterEn signedIn={signedIn}/>
  </main>
 }
