@@ -1,3 +1,4 @@
+import "../store.module.css";
 import { notFound } from "next/navigation";
 import PublicHeader from "@/components/public-header";
 import PublicFooter from "@/components/public-footer";
