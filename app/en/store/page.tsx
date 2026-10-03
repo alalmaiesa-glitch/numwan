@@ -1,3 +1,4 @@
+import "../../store/store.module.css";
 import Link from "next/link";
 import PublicHeaderEn from "@/components/public-header-en";
 import PublicFooterEn from "@/components/public-footer-en";
