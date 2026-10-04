@@ -88,7 +88,7 @@ export default async function StoreProductPage({params}:{params:Promise<{slug:st
           "@type":"Organization",
           name:"Numwan"
         },
-        license:"https://creativecommons.org/licenses/by/4.0/",
+        isBasedOn:"https://climatetrace.org/data",
         version:product.product_version,
         isAccessibleForFree:false,
         measurementTechnique:"Climate TRACE source-level industrial emissions and activity data normalized by Numwan",
