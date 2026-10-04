@@ -43,7 +43,7 @@ export async function GET(){
     headers:{
       "Content-Type":"text/csv; charset=utf-8",
       "Content-Disposition":'attachment; filename="Numwan_Saudi_Industrial_Intelligence_V1_Free_Sample.csv"',
-      "Cache-Control":"public, max-age=3600",
+      "Cache-Control":"no-store",
       "X-Content-Type-Options":"nosniff"
     }
   });
