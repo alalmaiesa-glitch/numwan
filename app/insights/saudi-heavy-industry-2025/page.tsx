@@ -147,6 +147,19 @@ export default async function SaudiHeavyIndustrySnapshot(){
       <p>{snapshot.methodology_ar}</p>
     </section>
 
+    <section className="snapshotUseCases shellWide">
+      <div className="snapshotSectionHead">
+        <span className="sectionKicker">كيف تستخدم البيانات؟</span>
+        <h2>نفس الأصل، ثلاث قرارات مختلفة.</h2>
+        <p>اختر الزاوية الأقرب لعملك لترى ما الذي يمكن للبيانات أن تختصره، وما الذي لا تستبدله.</p>
+      </div>
+      <div className="snapshotUseCaseLinks">
+        <Link href="/use-cases/saudi-market-entry"><span>01</span><strong>دخول السوق السعودي</strong><p>للمصنعين الدوليين وفرق التوسع والمستشارين.</p></Link>
+        <Link href="/use-cases/industrial-research"><span>02</span><strong>البحث والاستراتيجية الصناعية</strong><p>للبحوث والسياسات والعروض الاستشارية.</p></Link>
+        <Link href="/use-cases/esg-industrial-intelligence"><span>03</span><strong>الاستدامة وESG</strong><p>لفرز المنشآت والانبعاثات مع درجات الثقة.</p></Link>
+      </div>
+    </section>
+
     <section className="snapshotCta shellWide">
       <div className="snapshotCtaCopy">
         <span className="sectionKicker">{product?"الأصل الكامل متاح":"قبل الإطلاق"}</span>
