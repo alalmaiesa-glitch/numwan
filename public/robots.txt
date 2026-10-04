@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /vault
+Disallow: /assets
+Disallow: /deals
+Disallow: /commerce
+Disallow: /account/
+Disallow: /login
+
+Sitemap: https://numwan.net/sitemap.xml
