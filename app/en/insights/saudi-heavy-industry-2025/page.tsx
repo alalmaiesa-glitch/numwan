@@ -3,6 +3,7 @@ import Link from "next/link";
 import PublicHeaderEn from "@/components/public-header-en";
 import PublicFooterEn from "@/components/public-footer-en";
 import LaunchLeadForm from "@/components/launch-lead-form";
+import StoreViewTracker from "@/components/store-view-tracker";
 import { createClient } from "@/lib/supabase/server";
 import { createPublicClient } from "@/lib/supabase/public";
 import { getPublishedStoreProduct } from "@/lib/store/public-product";
@@ -46,7 +47,7 @@ export default async function EnglishSaudiHeavyIndustrySnapshot(){
   const [{data:snapshot},product]=await Promise.all([
     publicClient
       .from("store_public_snapshots")
-      .select("slug,title_en,summary_en,data_year,metrics,breakdown,methodology_en,updated_at")
+      .select("slug,product_id,title_en,summary_en,data_year,metrics,breakdown,methodology_en,updated_at")
       .eq("slug","saudi-heavy-industry-2025")
       .eq("is_public",true)
       .maybeSingle(),
@@ -85,6 +86,7 @@ export default async function EnglishSaudiHeavyIndustrySnapshot(){
       type="application/ld+json"
       dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData).replace(/</g,"\u003c")}}
     />
+    <StoreViewTracker productId={snapshot.product_id} eventType="INSIGHT_VIEW"/>
     <PublicHeaderEn signedIn={signedIn} light/>
 
     <section className="snapshotHero shellWide">
