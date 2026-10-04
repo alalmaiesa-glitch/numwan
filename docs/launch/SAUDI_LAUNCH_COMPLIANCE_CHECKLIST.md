@@ -13,7 +13,7 @@
 - Download audit log.
 - Public methodology / snapshot.
 - Explicit marketing-consent capture for launch leads.
-- Ability to stop using a lead by status change / unsubscribe workflow to be wired before first marketing email.
+- Tokenized unsubscribe confirmation workflow; GET does not unsubscribe automatically, and POST marks the lead UNSUBSCRIBED.
 - Checkout cannot publish until payment gate is READY.
 
 ## Must be confirmed in the single launch session
@@ -59,9 +59,10 @@ After contract:
 The e-commerce implementing regulations require a means for recipients to stop electronic advertising.
 
 Before first lead email:
-- [ ] add one-click unsubscribe path,
-- [ ] set lead status to UNSUBSCRIBED immediately,
-- [ ] exclude unsubscribed leads from future sends.
+- [x] provide a dedicated unsubscribe path per lead,
+- [x] set lead status to UNSUBSCRIBED immediately after confirmation,
+- [x] retain unsubscribed status for future send filtering,
+- [ ] ensure the final email sender appends the per-lead unsubscribe URL to every marketing email.
 
 ## Recommended public policies before launch
 
