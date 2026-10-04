@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sampleCsv } from "@/lib/store/product1-export";
 
@@ -10,13 +10,12 @@ function isUuid(value:string|undefined){
 }
 
 export async function GET(){
-  const supabase=await createClient();
-  const {data:rows,error}=await supabase.rpc("get_numwan_product1_sample_v1");
+  const admin=createAdminClient();
+  const {data:rows,error}=await admin.rpc("get_numwan_product1_sample_v1");
 
   if(error || !rows?.length) return new Response("Sample not available",{status:404});
 
   try{
-    const admin=createAdminClient();
     const {data:product}=await admin
       .from("store_products")
       .select("id")
