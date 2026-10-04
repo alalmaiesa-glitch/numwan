@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Alexandria, IBM_Plex_Sans_Arabic, Manrope } from "next/font/google";
 import "./globals.css";
+import { getSiteUrl } from "@/lib/site-url";
 
 const arabicBody = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
@@ -23,8 +24,22 @@ const latin = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "نُموان | الفرص والأصول في قطاع الأعمال",
-  description: "نُموان يطوّر فرصًا وأصولًا في قطاع الأعمال، جاهزة للانتقال من الفكرة والدراسة إلى التنفيذ الفعلي.",
+  metadataBase: new URL(getSiteUrl()),
+  title: "نُموان | أصول أعمال جاهزة للتنفيذ",
+  description: "أصول أعمال رقمية منتقاة وجاهزة للاستخدام: بيانات، نماذج، تقارير ومخططات تنفيذية بمعاينة وسعر وترخيص واضح.",
+  alternates:{
+    canonical:"/",
+    languages:{
+      "ar-SA":"/",
+      "en":"/en"
+    }
+  },
+  openGraph:{
+    type:"website",
+    siteName:"نُموان",
+    title:"نُموان | أصول أعمال جاهزة للتنفيذ",
+    description:"أصول أعمال رقمية منتقاة وجاهزة للاستخدام، من البيانات والنماذج إلى مخططات التنفيذ."
+  }
 };
 
 export default function RootLayout({
