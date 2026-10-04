@@ -11,7 +11,9 @@ export default async function CommercePage(){
     {data:products},
     {data:orders},
     {count:views},
-    {count:samples}
+    {count:samples},
+    {count:leads},
+    {data:targets}
   ]=await Promise.all([
     supabase.from("store_products")
       .select("id,sku,title_ar,status,price_sar,rights_status,delivery_status,checkout_status,updated_at")
@@ -24,7 +26,15 @@ export default async function CommercePage(){
       .eq("event_type","PRODUCT_VIEW"),
     supabase.from("store_funnel_events")
       .select("*",{count:"exact",head:true})
-      .eq("event_type","SAMPLE_DOWNLOAD")
+      .eq("event_type","SAMPLE_DOWNLOAD"),
+    supabase.from("store_leads")
+      .select("*",{count:"exact",head:true})
+      .eq("status","SUBSCRIBED"),
+    supabase.from("store_target_accounts")
+      .select("id,company_name,domain,country,segment,status,priority,rationale,source_url")
+      .order("priority",{ascending:true})
+      .order("company_name",{ascending:true})
+      .limit(20)
   ]);
 
   const allOrders=orders??[];
@@ -46,7 +56,9 @@ export default async function CommercePage(){
     ["05",revenue.toLocaleString("ar-SA"),"إيراد مدفوع (ر.س)"],
     ["06",conversion.toLocaleString("ar-SA",{maximumFractionDigits:1})+"%","تحويل مشاهدة ← شراء"],
     ["07",published,"منتجات منشورة"],
-    ["08",ready,"جاهز للنشر"]
+    ["08",ready,"جاهز للنشر"],
+    ["09",leads??0,"مهتمون بالإطلاق"],
+    ["10",targets?.length??0,"حسابات مستهدفة أولية"]
   ] as const;
 
   return <>
@@ -75,6 +87,29 @@ export default async function CommercePage(){
         <div><span>03</span><strong>طلب</strong><p>بدأ مسار الشراء وأنشئ الطلب.</p></div>
         <div><span>04</span><strong>دفع</strong><p>تحول الطلب إلى إيراد واستحقاق تلقائي.</p></div>
       </div>
+    </section>
+
+    <header className="workspacePageHead">
+      <span className="sectionKicker">الحسابات المستهدفة</span>
+      <h1>أول شريحة بيع</h1>
+      <p>جهات بحثية واستشارية ودخول سوق لها استخدام واضح للبيانات الصناعية. لا توجد بيانات شخصية أو قوائم بريد مشتراة.</p>
+    </header>
+
+    <section className="assetWorkspaceList">
+      {targets?.length ? targets.map((target,index)=>
+        <article className="assetWorkspaceRow" key={target.id}>
+          <span className="assetWorkspaceIndex">{String(index+1).padStart(2,"0")}</span>
+          <div className="assetWorkspaceMain">
+            <small>{target.segment} · أولوية {target.priority}</small>
+            <h2>{target.company_name}</h2>
+            <p>{target.rationale}</p>
+          </div>
+          <div className="assetWorkspaceMeta">
+            <div><span>الدولة</span><strong>{target.country||"—"}</strong></div>
+            <div><span>الحالة</span><strong>{target.status}</strong></div>
+          </div>
+        </article>
+      ) : <div className="editorialEmpty"><span>00</span><h2>لا توجد حسابات مستهدفة بعد.</h2><p>تُضاف فقط الجهات التي لها سبب شراء واضح ومصدر علني موثوق.</p></div>}
     </section>
 
     <header className="workspacePageHead">
