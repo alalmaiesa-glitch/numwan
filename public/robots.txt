@@ -10,3 +10,4 @@ Disallow: /account/
 Disallow: /login
 
 Sitemap: https://numwan.net/sitemap.xml
+Sitemap: https://numwan.net/sitemap.txt
