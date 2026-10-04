@@ -19,15 +19,21 @@ function getSessionId(){
   }
 }
 
-export default function StoreViewTracker({productId}:{productId:string}){
+export default function StoreViewTracker({
+  productId,
+  eventType="PRODUCT_VIEW"
+}:{
+  productId:string;
+  eventType?:"PRODUCT_VIEW"|"INSIGHT_VIEW";
+}){
   useEffect(()=>{
-    const onceKey="numwan_view:"+productId+":"+window.location.pathname;
+    const onceKey="numwan_view:"+eventType+":"+productId+":"+window.location.pathname;
     if(window.sessionStorage.getItem(onceKey)) return;
     window.sessionStorage.setItem(onceKey,"1");
 
     const params=new URLSearchParams(window.location.search);
     const payload={
-      eventType:"PRODUCT_VIEW",
+      eventType,
       productId,
       sessionId:getSessionId(),
       path:window.location.pathname,
@@ -49,7 +55,7 @@ export default function StoreViewTracker({productId}:{productId:string}){
       body,
       keepalive:true
     }).catch(()=>{});
-  },[productId]);
+  },[productId,eventType]);
 
   return null;
 }
