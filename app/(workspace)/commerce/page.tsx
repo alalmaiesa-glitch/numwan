@@ -10,6 +10,7 @@ export default async function CommercePage(){
   const [
     {data:products},
     {data:orders},
+    {count:insightViews},
     {count:views},
     {count:samples},
     {count:leads},
@@ -21,6 +22,9 @@ export default async function CommercePage(){
     supabase.from("store_orders")
       .select("id,order_code,status,total_sar,created_at")
       .order("created_at",{ascending:false}),
+    supabase.from("store_funnel_events")
+      .select("*",{count:"exact",head:true})
+      .eq("event_type","INSIGHT_VIEW"),
     supabase.from("store_funnel_events")
       .select("*",{count:"exact",head:true})
       .eq("event_type","PRODUCT_VIEW"),
@@ -47,18 +51,21 @@ export default async function CommercePage(){
     product.checkout_status==="READY"
   ).length;
   const conversion=views && views>0 ? (paidOrders.length/views)*100 : 0;
+  const prelaunchConversion=insightViews && insightViews>0 ? ((leads??0)/insightViews)*100 : 0;
 
   const metrics=[
-    ["01",views??0,"مشاهدة منتج"],
-    ["02",samples??0,"تحميل عينة"],
-    ["03",allOrders.length,"طلبات بدأت"],
-    ["04",paidOrders.length,"طلبات مدفوعة"],
-    ["05",revenue.toLocaleString("ar-SA"),"إيراد مدفوع (ر.س)"],
-    ["06",conversion.toLocaleString("ar-SA",{maximumFractionDigits:1})+"%","تحويل مشاهدة ← شراء"],
-    ["07",published,"منتجات منشورة"],
-    ["08",ready,"جاهز للنشر"],
-    ["09",leads??0,"مهتمون بالإطلاق"],
-    ["10",targets?.length??0,"حسابات مستهدفة أولية"]
+    ["01",insightViews??0,"مشاهدة الرؤية"],
+    ["02",leads??0,"مهتمون بالإطلاق"],
+    ["03",prelaunchConversion.toLocaleString("ar-SA",{maximumFractionDigits:1})+"%","تحويل رؤية ← اهتمام"],
+    ["04",views??0,"مشاهدة منتج"],
+    ["05",samples??0,"تحميل عينة"],
+    ["06",allOrders.length,"طلبات بدأت"],
+    ["07",paidOrders.length,"طلبات مدفوعة"],
+    ["08",revenue.toLocaleString("ar-SA"),"إيراد مدفوع (ر.س)"],
+    ["09",conversion.toLocaleString("ar-SA",{maximumFractionDigits:1})+"%","تحويل منتج ← شراء"],
+    ["10",targets?.length??0,"حسابات مستهدفة أولية"],
+    ["11",published,"منتجات منشورة"],
+    ["12",ready,"جاهز للنشر"]
   ] as const;
 
   return <>
