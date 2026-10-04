@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import PublicHeaderEn from "@/components/public-header-en";
 import PublicFooterEn from "@/components/public-footer-en";
 import { createClient } from "@/lib/supabase/server";
+import { startStoreCheckout } from "@/app/actions/store-checkout";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function EnglishStoreProductPage({params}:{params:Promise<{
   const signedIn=Boolean(claims?.claims);
   const {data:product}=await supabase
     .from("store_products")
-    .select("id,slug,sku,title_en,title_ar,summary_en,summary_ar,product_type,price_sar,compare_at_price_sar,delivery_mode,license_tier,preview_en,preview_ar,published_at")
+    .select("id,slug,sku,title_en,title_ar,summary_en,summary_ar,product_type,price_sar,compare_at_price_sar,delivery_mode,license_tier,preview_en,preview_ar,published_at,checkout_status")
     .eq("slug",slug)
     .eq("status","PUBLISHED")
     .maybeSingle();
@@ -41,7 +42,12 @@ export default async function EnglishStoreProductPage({params}:{params:Promise<{
         <span>PRICE</span>
         <strong>SAR {Number(product.price_sar).toLocaleString("en-US")}</strong>
         <small>{product.license_tier === "COMMERCIAL" ? "Commercial license" : product.license_tier === "PROFESSIONAL" ? "Professional license" : "Standard license"}</small>
-        <div className="purchasePending">Checkout and automated delivery are enabled before the first paid product is published.</div>
+        {product.checkout_status==="READY"
+          ? <form className="purchaseForm" action={startStoreCheckout.bind(null,slug)}>
+              <button className="purchaseButton" type="submit">Buy now</button>
+              <span>Delivery appears automatically in Purchases after payment confirmation.</span>
+            </form>
+          : <div className="purchasePending">Checkout is not available for this product yet.</div>}
       </aside>
     </section>
 
