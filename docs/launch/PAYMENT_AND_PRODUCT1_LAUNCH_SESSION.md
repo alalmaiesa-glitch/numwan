@@ -40,17 +40,23 @@ Confirm the exact public seller identity that must appear on checkout, invoice a
 - billing address or required statutory contact information.
 
 ### 4. Product commercial license
-Confirm launch policy for:
-- individual / Standard license scope,
-- number of permitted users,
-- internal business use,
-- redistribution prohibition or conditions,
-- derivative-work rules,
-- source-attribution obligations inherited from included sources,
-- refund policy for digital delivery,
-- update entitlement for V1 purchases.
+A working draft is already prepared. Confirm or change only these decisions:
+- Standard license default: one purchasing legal entity, proposed **5 internal users**.
+- Internal analysis and limited derived/aggregated external client outputs: proposed **allowed**, without raw-data redistribution.
+- Raw file resale / redistribution / sublicensing: proposed **prohibited**.
+- V1 updates: recommended **all V1.x updates until V2**.
+- Pre-download cancellation: proposed full refund within 7 days where no paid file was accessed.
+- After first download: no change-of-mind refund, subject to mandatory Saudi rights for defects/non-conformity.
+- Support email for refund/contact requests.
 
-### 5. Final end-to-end test
+### 5. Distribution connections
+Connect once:
+- X account to Metricool.
+- LinkedIn page/profile intended for Numwan to Metricool.
+
+Metricool currently has a brand record but no social network connected. Launch assets and UTM fields are already prepared; connecting the channels should not require rewriting the campaign.
+
+### 6. Final end-to-end test
 The release gate becomes READY only after:
 1. sandbox checkout starts,
 2. provider confirms payment,
