@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { sampleCsv } from "@/lib/store/product1-export";
 
 export const dynamic="force-dynamic";
