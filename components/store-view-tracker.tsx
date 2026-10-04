@@ -24,7 +24,7 @@ export default function StoreViewTracker({
   eventType="PRODUCT_VIEW"
 }:{
   productId:string;
-  eventType?:"PRODUCT_VIEW"|"INSIGHT_VIEW";
+  eventType?:"PRODUCT_VIEW"|"INSIGHT_VIEW"|"LANDING_VIEW";
 }){
   useEffect(()=>{
     const onceKey="numwan_view:"+eventType+":"+productId+":"+window.location.pathname;
