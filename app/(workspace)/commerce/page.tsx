@@ -15,7 +15,8 @@ export default async function CommercePage(){
     {count:views},
     {count:samples},
     {count:leads},
-    {data:targets}
+    {data:targets},
+    {data:campaignAssets}
   ]=await Promise.all([
     supabase.from("store_products")
       .select("id,sku,title_ar,status,price_sar,rights_status,delivery_status,checkout_status,updated_at")
@@ -42,7 +43,10 @@ export default async function CommercePage(){
       .select("id,company_name,domain,country,segment,status,priority,rationale,source_url")
       .order("priority",{ascending:true})
       .order("company_name",{ascending:true})
-      .limit(20)
+      .limit(20),
+    supabase.from("store_campaign_assets")
+      .select("id,asset_key,phase,channel,language,headline,status,sequence_order,target_path")
+      .order("sequence_order",{ascending:true})
   ]);
 
   const allOrders=orders??[];
@@ -62,6 +66,8 @@ export default async function CommercePage(){
     esg:(landingEvents??[]).filter(event=>event.path?.includes("/esg-industrial-intelligence")).length
   };
   const landingViews=(landingEvents??[]).length;
+  const campaignReady=(campaignAssets??[]).filter(asset=>asset.status==="READY").length;
+  const campaignBlocked=(campaignAssets??[]).filter(asset=>asset.status==="BLOCKED_PAYMENT").length;
 
   const metrics=[
     ["01",insightViews??0,"مشاهدة الرؤية"],
@@ -76,7 +82,9 @@ export default async function CommercePage(){
     ["10",conversion.toLocaleString("ar-SA",{maximumFractionDigits:1})+"%","تحويل منتج ← شراء"],
     ["11",targets?.length??0,"حسابات مستهدفة أولية"],
     ["12",published,"منتجات منشورة"],
-    ["13",ready,"جاهز للنشر"]
+    ["13",ready,"جاهز للنشر"],
+    ["14",campaignReady,"مواد حملة جاهزة"],
+    ["15",campaignBlocked,"مواد تنتظر الدفع"]
   ] as const;
 
   return <>
@@ -117,6 +125,29 @@ export default async function CommercePage(){
       <div><span>01</span><strong>{landingCounts.marketEntry}</strong><p>دخول السوق السعودي</p></div>
       <div><span>02</span><strong>{landingCounts.industrialResearch}</strong><p>البحث والاستراتيجية الصناعية</p></div>
       <div><span>03</span><strong>{landingCounts.esg}</strong><p>الاستدامة وESG</p></div>
+    </section>
+
+    <header className="workspacePageHead">
+      <span className="sectionKicker">Launch Pack V1</span>
+      <h1>الحملة جاهزة قبل الدفع</h1>
+      <p>مواد ما قبل الإطلاق تبقى جاهزة، ومواد الإطلاق والمتابعة تُفتح تلقائيًا فقط بعد نشر المنتج والدفع الجاهز.</p>
+    </header>
+
+    <section className="assetWorkspaceList">
+      {campaignAssets?.length ? campaignAssets.map((asset,index)=>
+        <article className="assetWorkspaceRow" key={asset.id}>
+          <span className="assetWorkspaceIndex">{String(index+1).padStart(2,"0")}</span>
+          <div className="assetWorkspaceMain">
+            <small>{asset.phase} · {asset.channel} · {asset.language.toUpperCase()}</small>
+            <h2>{asset.headline}</h2>
+            <p>{asset.target_path}</p>
+          </div>
+          <div className="assetWorkspaceMeta">
+            <div><span>الحالة</span><strong>{asset.status}</strong></div>
+            <div><span>الترتيب</span><strong>{asset.sequence_order}</strong></div>
+          </div>
+        </article>
+      ) : <div className="editorialEmpty"><span>00</span><h2>لا توجد مواد حملة.</h2><p>يجب أن يكون لكل إطلاق محتوى وقناة وUTM وحالة تشغيل واضحة.</p></div>}
     </section>
 
     <header className="workspacePageHead">
