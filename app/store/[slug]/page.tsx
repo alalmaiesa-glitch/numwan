@@ -57,6 +57,9 @@ export default async function StoreProductPage({params}:{params:Promise<{slug:st
         <div><span className="sectionKicker">المعاينة</span><h2>ما الذي تحصل عليه؟</h2></div>
       </div>
       <div className="productPreviewText">{product.preview_ar || "ستظهر المعاينة التفصيلية هنا عند اعتماد المنتج للنشر."}</div>
+      {slug==="saudi-industrial-intelligence-v1"
+        ? <a className="sampleDownload" href="/api/store/sample/saudi-industrial-intelligence-v1">تحميل عينة مجانية CSV <span>↗</span></a>
+        : null}
     </section>
     <PublicFooter signedIn={signedIn}/>
   </main>;
