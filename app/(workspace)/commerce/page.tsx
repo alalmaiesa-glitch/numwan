@@ -6,17 +6,29 @@ const checkoutLabel:Record<string,string>={NOT_READY:"غير جاهز",CONFIGURI
 
 export default async function CommercePage(){
   const supabase=await createClient();
-  const [{data:products},{data:orders}]=await Promise.all([
+
+  const [
+    {data:products},
+    {data:orders},
+    {count:views},
+    {count:samples}
+  ]=await Promise.all([
     supabase.from("store_products")
       .select("id,sku,title_ar,status,price_sar,rights_status,delivery_status,checkout_status,updated_at")
       .order("updated_at",{ascending:false}),
     supabase.from("store_orders")
       .select("id,order_code,status,total_sar,created_at")
-      .order("created_at",{ascending:false})
-      .limit(20)
+      .order("created_at",{ascending:false}),
+    supabase.from("store_funnel_events")
+      .select("*",{count:"exact",head:true})
+      .eq("event_type","PRODUCT_VIEW"),
+    supabase.from("store_funnel_events")
+      .select("*",{count:"exact",head:true})
+      .eq("event_type","SAMPLE_DOWNLOAD")
   ]);
 
-  const paidOrders=(orders??[]).filter(order=>order.status==="PAID");
+  const allOrders=orders??[];
+  const paidOrders=allOrders.filter(order=>order.status==="PAID");
   const revenue=paidOrders.reduce((sum,order)=>sum+Number(order.total_sar||0),0);
   const published=(products??[]).filter(product=>product.status==="PUBLISHED").length;
   const ready=(products??[]).filter(product=>
@@ -24,20 +36,24 @@ export default async function CommercePage(){
     product.delivery_status==="READY" &&
     product.checkout_status==="READY"
   ).length;
+  const conversion=views && views>0 ? (paidOrders.length/views)*100 : 0;
 
   const metrics=[
-    ["01",products?.length??0,"منتجات في خط نُموان"],
-    ["02",published,"منتجات منشورة"],
-    ["03",paidOrders.length,"طلبات مدفوعة"],
-    ["04",revenue.toLocaleString("ar-SA"),"إيراد مدفوع (ر.س)"],
-    ["05",ready,"جاهز للنشر"]
+    ["01",views??0,"مشاهدة منتج"],
+    ["02",samples??0,"تحميل عينة"],
+    ["03",allOrders.length,"طلبات بدأت"],
+    ["04",paidOrders.length,"طلبات مدفوعة"],
+    ["05",revenue.toLocaleString("ar-SA"),"إيراد مدفوع (ر.س)"],
+    ["06",conversion.toLocaleString("ar-SA",{maximumFractionDigits:1})+"%","تحويل مشاهدة ← شراء"],
+    ["07",published,"منتجات منشورة"],
+    ["08",ready,"جاهز للنشر"]
   ] as const;
 
   return <>
     <header className="workspacePageHead">
       <span className="sectionKicker">NUMWAN 20K</span>
       <h1>التجارة</h1>
-      <p>لوحة الجاهزية والإيراد. لا يُنشر أي منتج قبل اجتياز بوابات الحقوق والتسليم والدفع.</p>
+      <p>المقياس هنا ليس اكتمال المنصة؛ بل الانتقال من المشاهدة إلى العينة ثم الطلب والدفع والإيراد.</p>
     </header>
 
     <section className="metricsGrid">
@@ -50,21 +66,21 @@ export default async function CommercePage(){
 
     <section className="workspaceEditorial">
       <div>
-        <span className="sectionKicker">بوابة النشر</span>
-        <h2>ثلاثة أضواء خضراء<br/>قبل أول ريال.</h2>
+        <span className="sectionKicker">مسار الإيراد</span>
+        <h2>نقيس التسرب<br/>قبل أن نزيد التسويق.</h2>
       </div>
       <div className="workspaceProcess">
-        <div><span>01</span><strong>الحقوق</strong><p>يجب أن تكون CLEARED قبل النشر.</p></div>
-        <div><span>02</span><strong>التسليم</strong><p>الملف التجاري النهائي جاهز وآمن.</p></div>
-        <div><span>03</span><strong>الدفع</strong><p>بوابة الدفع وWebhook يعملان فعليًا.</p></div>
-        <div><span>04</span><strong>النشر</strong><p>عندها فقط يصبح المنتج ظاهرًا للبيع.</p></div>
+        <div><span>01</span><strong>مشاهدة</strong><p>دخل الزائر إلى صفحة المنتج.</p></div>
+        <div><span>02</span><strong>عينة</strong><p>حمّل عينة ليفحص جودة الأصل.</p></div>
+        <div><span>03</span><strong>طلب</strong><p>بدأ مسار الشراء وأنشئ الطلب.</p></div>
+        <div><span>04</span><strong>دفع</strong><p>تحول الطلب إلى إيراد واستحقاق تلقائي.</p></div>
       </div>
     </section>
 
     <header className="workspacePageHead">
-      <span className="sectionKicker">المنتجات</span>
+      <span className="sectionKicker">بوابة النشر</span>
       <h1>خط الإنتاج</h1>
-      <p>الحالة التجارية الحالية لكل أصل رقمي.</p>
+      <p>لا يُنشر أي أصل قبل اجتياز الحقوق والتسليم والدفع معًا.</p>
     </header>
 
     <section className="assetWorkspaceList">
