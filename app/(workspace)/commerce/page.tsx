@@ -11,6 +11,7 @@ export default async function CommercePage(){
     {data:products},
     {data:orders},
     {count:insightViews},
+    {data:landingEvents},
     {count:views},
     {count:samples},
     {count:leads},
@@ -25,6 +26,9 @@ export default async function CommercePage(){
     supabase.from("store_funnel_events")
       .select("*",{count:"exact",head:true})
       .eq("event_type","INSIGHT_VIEW"),
+    supabase.from("store_funnel_events")
+      .select("path")
+      .eq("event_type","LANDING_VIEW"),
     supabase.from("store_funnel_events")
       .select("*",{count:"exact",head:true})
       .eq("event_type","PRODUCT_VIEW"),
@@ -52,20 +56,27 @@ export default async function CommercePage(){
   ).length;
   const conversion=views && views>0 ? (paidOrders.length/views)*100 : 0;
   const prelaunchConversion=insightViews && insightViews>0 ? ((leads??0)/insightViews)*100 : 0;
+  const landingCounts={
+    marketEntry:(landingEvents??[]).filter(event=>event.path?.includes("/saudi-market-entry")).length,
+    industrialResearch:(landingEvents??[]).filter(event=>event.path?.includes("/industrial-research")).length,
+    esg:(landingEvents??[]).filter(event=>event.path?.includes("/esg-industrial-intelligence")).length
+  };
+  const landingViews=(landingEvents??[]).length;
 
   const metrics=[
     ["01",insightViews??0,"مشاهدة الرؤية"],
     ["02",leads??0,"مهتمون بالإطلاق"],
     ["03",prelaunchConversion.toLocaleString("ar-SA",{maximumFractionDigits:1})+"%","تحويل رؤية ← اهتمام"],
-    ["04",views??0,"مشاهدة منتج"],
-    ["05",samples??0,"تحميل عينة"],
-    ["06",allOrders.length,"طلبات بدأت"],
-    ["07",paidOrders.length,"طلبات مدفوعة"],
-    ["08",revenue.toLocaleString("ar-SA"),"إيراد مدفوع (ر.س)"],
-    ["09",conversion.toLocaleString("ar-SA",{maximumFractionDigits:1})+"%","تحويل منتج ← شراء"],
-    ["10",targets?.length??0,"حسابات مستهدفة أولية"],
-    ["11",published,"منتجات منشورة"],
-    ["12",ready,"جاهز للنشر"]
+    ["04",landingViews,"مشاهدة صفحات الاستخدام"],
+    ["05",views??0,"مشاهدة منتج"],
+    ["06",samples??0,"تحميل عينة"],
+    ["07",allOrders.length,"طلبات بدأت"],
+    ["08",paidOrders.length,"طلبات مدفوعة"],
+    ["09",revenue.toLocaleString("ar-SA"),"إيراد مدفوع (ر.س)"],
+    ["10",conversion.toLocaleString("ar-SA",{maximumFractionDigits:1})+"%","تحويل منتج ← شراء"],
+    ["11",targets?.length??0,"حسابات مستهدفة أولية"],
+    ["12",published,"منتجات منشورة"],
+    ["13",ready,"جاهز للنشر"]
   ] as const;
 
   return <>
@@ -94,6 +105,18 @@ export default async function CommercePage(){
         <div><span>03</span><strong>طلب</strong><p>بدأ مسار الشراء وأنشئ الطلب.</p></div>
         <div><span>04</span><strong>دفع</strong><p>تحول الطلب إلى إيراد واستحقاق تلقائي.</p></div>
       </div>
+    </section>
+
+    <header className="workspacePageHead">
+      <span className="sectionKicker">زوايا الطلب</span>
+      <h1>أي رسالة تعمل؟</h1>
+      <p>نقارن صفحات الاستخدام الثلاث قبل توسيع النشر أو الإنفاق.</p>
+    </header>
+
+    <section className="workspaceProcess">
+      <div><span>01</span><strong>{landingCounts.marketEntry}</strong><p>دخول السوق السعودي</p></div>
+      <div><span>02</span><strong>{landingCounts.industrialResearch}</strong><p>البحث والاستراتيجية الصناعية</p></div>
+      <div><span>03</span><strong>{landingCounts.esg}</strong><p>الاستدامة وESG</p></div>
     </section>
 
     <header className="workspacePageHead">

@@ -17,19 +17,36 @@ function isUuid(value:unknown){
 export async function POST(request:Request){
   try{
     const body=await request.json();
-    if(!["PRODUCT_VIEW","INSIGHT_VIEW"].includes(body?.eventType) || !isUuid(body?.productId)){
+    const allowedTypes=["PRODUCT_VIEW","INSIGHT_VIEW","LANDING_VIEW"];
+
+    if(!allowedTypes.includes(body?.eventType) || !isUuid(body?.productId)){
       return NextResponse.json({ok:false},{status:400});
     }
 
     const admin=createAdminClient();
     const {data:product}=await admin
       .from("store_products")
-      .select("id")
+      .select("id,status")
       .eq("id",body.productId)
-      .eq("status","PUBLISHED")
       .maybeSingle();
 
     if(!product) return NextResponse.json({ok:false},{status:404});
+
+    if(body.eventType==="PRODUCT_VIEW" && product.status!=="PUBLISHED"){
+      return NextResponse.json({ok:false},{status:404});
+    }
+
+    if(body.eventType==="INSIGHT_VIEW" || body.eventType==="LANDING_VIEW"){
+      const {data:snapshot}=await admin
+        .from("store_public_snapshots")
+        .select("id")
+        .eq("product_id",product.id)
+        .eq("is_public",true)
+        .limit(1)
+        .maybeSingle();
+
+      if(!snapshot) return NextResponse.json({ok:false},{status:404});
+    }
 
     const sessionId=isUuid(body.sessionId) ? body.sessionId : null;
 

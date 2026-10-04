@@ -147,6 +147,19 @@ export default async function EnglishSaudiHeavyIndustrySnapshot(){
       <p>{snapshot.methodology_en}</p>
     </section>
 
+    <section className="snapshotUseCases shellWide">
+      <div className="snapshotSectionHead">
+        <span className="sectionKicker">HOW CAN YOU USE THE DATA?</span>
+        <h2>One asset, three different decisions.</h2>
+        <p>Choose the angle closest to your work to see what the dataset can accelerate—and what it does not replace.</p>
+      </div>
+      <div className="snapshotUseCaseLinks">
+        <Link href="/en/use-cases/saudi-market-entry"><span>01</span><strong>Saudi market entry</strong><p>For international manufacturers, expansion teams and advisors.</p></Link>
+        <Link href="/en/use-cases/industrial-research"><span>02</span><strong>Industrial research & strategy</strong><p>For research, policy and consulting work.</p></Link>
+        <Link href="/en/use-cases/esg-industrial-intelligence"><span>03</span><strong>Sustainability & ESG</strong><p>For facility and emissions screening with confidence context.</p></Link>
+      </div>
+    </section>
+
     <section className="snapshotCta shellWide">
       <div className="snapshotCtaCopy">
         <span className="sectionKicker">{product?"FULL ASSET AVAILABLE":"PRE-LAUNCH"}</span>

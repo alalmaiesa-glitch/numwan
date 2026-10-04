@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { createPublicClient } from "@/lib/supabase/public";
 import { getSiteUrl } from "@/lib/site-url";
+import { PRODUCT1_USE_CASES } from "@/lib/store/product1-use-cases";
 
 export const dynamic="force-dynamic";
 
@@ -24,6 +25,21 @@ export default async function sitemap():Promise<MetadataRoute.Sitemap>{
     {url:base+"/en/about",lastModified:now,changeFrequency:"monthly",priority:.4},
     {url:base+"/en/insights/saudi-heavy-industry-2025",lastModified:now,changeFrequency:"monthly",priority:.75}
   ];
+
+  for(const useCase of PRODUCT1_USE_CASES){
+    pages.push({
+      url:base+"/use-cases/"+useCase.slug,
+      lastModified:now,
+      changeFrequency:"monthly",
+      priority:.72
+    });
+    pages.push({
+      url:base+"/en/use-cases/"+useCase.slug,
+      lastModified:now,
+      changeFrequency:"monthly",
+      priority:.68
+    });
+  }
 
   for(const product of products??[]){
     const modified=product.updated_at ? new Date(product.updated_at) : now;
