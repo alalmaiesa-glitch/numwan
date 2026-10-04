@@ -1,10 +1,23 @@
 import "./store.module.css";
+import type { Metadata } from "next";
 import Link from "next/link";
 import PublicHeader from "@/components/public-header";
 import PublicFooter from "@/components/public-footer";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
+
+export const metadata:Metadata={
+  title:"متجر نُموان | أصول أعمال رقمية جاهزة",
+  description:"استكشف بيانات ونماذج وتقارير ومخططات تنفيذية رقمية جاهزة للشراء والاستخدام، بمعاينة وسعر وترخيص واضح.",
+  alternates:{
+    canonical:"/store",
+    languages:{
+      "ar-SA":"/store",
+      "en":"/en/store"
+    }
+  }
+};
 
 const typeLabels: Record<string,string> = {
   DATASET:"بيانات",
