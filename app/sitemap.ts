@@ -18,9 +18,11 @@ export default async function sitemap():Promise<MetadataRoute.Sitemap>{
     {url:base+"/",lastModified:now,changeFrequency:"weekly",priority:1},
     {url:base+"/store",lastModified:now,changeFrequency:"weekly",priority:.9},
     {url:base+"/about",lastModified:now,changeFrequency:"monthly",priority:.5},
+    {url:base+"/insights/saudi-heavy-industry-2025",lastModified:now,changeFrequency:"monthly",priority:.85},
     {url:base+"/en",lastModified:now,changeFrequency:"weekly",priority:.8},
     {url:base+"/en/store",lastModified:now,changeFrequency:"weekly",priority:.8},
-    {url:base+"/en/about",lastModified:now,changeFrequency:"monthly",priority:.4}
+    {url:base+"/en/about",lastModified:now,changeFrequency:"monthly",priority:.4},
+    {url:base+"/en/insights/saudi-heavy-industry-2025",lastModified:now,changeFrequency:"monthly",priority:.75}
   ];
 
   for(const product of products??[]){

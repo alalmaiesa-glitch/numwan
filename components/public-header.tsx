@@ -8,7 +8,7 @@ export default function PublicHeader({signedIn,light=false}:{signedIn:boolean;li
   return <header className={`publicHeader ${light?"lightMode":""} ${scrolled?"isScrolled":""}`}>
     <div className="publicHeaderInner shellWide">
       <Link href="/" className="wordmark"><strong>نُموان</strong></Link>
-      <nav className="publicLinks"><Link href="/store">المتجر</Link><Link href="/#method">كيف يعمل</Link><Link href="/about">عن نُموان</Link></nav>
+      <nav className="publicLinks"><Link href="/store">المتجر</Link><Link href="/insights/saudi-heavy-industry-2025">رؤى</Link><Link href="/#method">كيف يعمل</Link><Link href="/about">عن نُموان</Link></nav>
       <div className="headerActions"><Link href="/en">الإنجليزية</Link><Link className="headerAction" href={signedIn?"/dashboard":"/login"}>{signedIn?"حسابي":"دخول"}</Link></div>
     </div>
   </header>

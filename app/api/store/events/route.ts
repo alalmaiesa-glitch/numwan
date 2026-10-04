@@ -17,7 +17,7 @@ function isUuid(value:unknown){
 export async function POST(request:Request){
   try{
     const body=await request.json();
-    if(body?.eventType!=="PRODUCT_VIEW" || !isUuid(body?.productId)){
+    if(!["PRODUCT_VIEW","INSIGHT_VIEW"].includes(body?.eventType) || !isUuid(body?.productId)){
       return NextResponse.json({ok:false},{status:400});
     }
 
@@ -35,7 +35,7 @@ export async function POST(request:Request){
 
     const {error}=await admin.from("store_funnel_events").insert({
       product_id:product.id,
-      event_type:"PRODUCT_VIEW",
+      event_type:body.eventType,
       session_id:sessionId,
       path:clean(body.path,300),
       referrer:clean(body.referrer,700),
