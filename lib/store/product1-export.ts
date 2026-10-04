@@ -86,12 +86,22 @@ export function toCsv(rows:DataRow[],columns:Column[]=PRODUCT1_COLUMNS){
   return "\uFEFF"+lines.join("\r\n");
 }
 
+const NUMERIC_KEYS=new Set([
+  "source_id","latitude","longitude","capacity","activity_2025","capacity_factor",
+  "emissions_co2e_2025_t","emissions_factor","subsector_rank_2025","data_year"
+]);
+
 export function toXlsx(rows:DataRow[]){
   const headers=PRODUCT1_COLUMNS.map(column=>column.label);
   const values=rows.map(row=>PRODUCT1_COLUMNS.map(column=>{
     const value=row[column.key];
-    if(value===null || value===undefined) return null;
-    if(typeof value==="number" || typeof value==="boolean") return value;
+    if(value===null || value===undefined || value==="") return null;
+    if(typeof value==="boolean") return value;
+    if(NUMERIC_KEYS.has(column.key)){
+      const numeric=Number(value);
+      return Number.isFinite(numeric) ? numeric : String(value);
+    }
+    if(typeof value==="number") return value;
     return String(value);
   }));
   return createSimpleXlsx(headers,values,"Facilities");
@@ -136,12 +146,15 @@ export function sourceRightsCsv(rows:DataRow[]){
 
 export function releaseNotes(rows:DataRow[]){
   const counts=new Map<string,number>();
+  const confidenceCounts=new Map<string,number>();
   let ownerCount=0;
   let emissionsTotal=0;
 
   for(const row of rows){
     const sector=String(row.subsector_en||row.subsector_code||"Unknown");
     counts.set(sector,(counts.get(sector)||0)+1);
+    const confidence=String(row.confidence_emissions||"not provided");
+    confidenceCounts.set(confidence,(confidenceCounts.get(confidence)||0)+1);
     if(row.owner_names) ownerCount+=1;
     const emissions=Number(row.emissions_co2e_2025_t);
     if(Number.isFinite(emissions)) emissionsTotal+=emissions;
@@ -150,6 +163,11 @@ export function releaseNotes(rows:DataRow[]){
   const breakdown=[...counts.entries()]
     .sort((a,b)=>b[1]-a[1] || a[0].localeCompare(b[0]))
     .map(([sector,count])=>`- ${sector}: ${count}`)
+    .join("\n");
+
+  const confidenceBreakdown=[...confidenceCounts.entries()]
+    .sort((a,b)=>b[1]-a[1] || a[0].localeCompare(b[0]))
+    .map(([confidence,count])=>`- ${confidence}: ${count}`)
     .join("\n");
 
   return `NUMWAN — Saudi Industrial Intelligence: Heavy Industry Map V1
@@ -161,6 +179,9 @@ Represented 2025 emissions: ${emissionsTotal.toFixed(2)} t CO2e (100-year GWP)
 
 Coverage
 ${breakdown}
+
+Emissions confidence distribution
+${confidenceBreakdown}
 
 Source and license
 Primary included source: Climate TRACE.
