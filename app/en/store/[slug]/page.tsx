@@ -57,6 +57,9 @@ export default async function EnglishStoreProductPage({params}:{params:Promise<{
         <div><span className="sectionKicker">PREVIEW</span><h2>What do you get?</h2></div>
       </div>
       <div className="productPreviewText">{product.preview_en || product.preview_ar || "The detailed preview appears here once the product is approved for release."}</div>
+      {slug==="saudi-industrial-intelligence-v1"
+        ? <a className="sampleDownload" href="/api/store/sample/saudi-industrial-intelligence-v1">Download free CSV sample <span>↗</span></a>
+        : null}
     </section>
     <PublicFooterEn signedIn={signedIn}/>
   </main>;

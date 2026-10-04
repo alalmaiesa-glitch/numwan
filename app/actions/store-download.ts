@@ -39,6 +39,10 @@ export async function downloadStoreFile(entitlementId:string,productFileId:strin
     throw new Error("PRODUCT_FILE_NOT_AVAILABLE");
   }
 
+  if(file.storage_path.startsWith("generated://")){
+    redirect("/api/store/download/"+encodeURIComponent(file.id));
+  }
+
   const {data:signed,error:signedError}=await supabase.storage
     .from("numwan-store-products")
     .createSignedUrl(file.storage_path,120,{download:file.file_label});
