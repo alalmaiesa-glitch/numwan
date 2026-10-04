@@ -1,10 +1,23 @@
 import "../../store/store.module.css";
+import type { Metadata } from "next";
 import Link from "next/link";
 import PublicHeaderEn from "@/components/public-header-en";
 import PublicFooterEn from "@/components/public-footer-en";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
+
+export const metadata:Metadata={
+  title:"NUMWAN Store | Execution-Ready Business Assets",
+  description:"Browse digital datasets, models, reports and execution blueprints with clear previews, pricing and licensing.",
+  alternates:{
+    canonical:"/en/store",
+    languages:{
+      "en":"/en/store",
+      "ar-SA":"/store"
+    }
+  }
+};
 
 const typeLabels: Record<string,string> = {
   DATASET:"Dataset",
