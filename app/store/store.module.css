@@ -250,3 +250,64 @@
   :global(.productHeroCopy h1){font-size:38px}
   :global(.productHeroCopy p){font-size:16px}
 }
+
+:global(.purchaseForm){
+  margin-top:16px;
+  padding-top:18px;
+  border-top:1px solid var(--line);
+  display:grid;
+  gap:10px;
+}
+:global(.purchaseForm>span){
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.75;
+}
+:global(.purchaseButton){
+  min-height:50px;
+  width:100%;
+  border:1px solid var(--ink);
+  border-radius:3px;
+  background:var(--ink);
+  color:var(--ivory);
+  font-weight:700;
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;
+}
+:global(.purchaseButton:hover){
+  background:var(--mineral);
+  border-color:var(--mineral);
+  transform:translateY(-1px);
+}
+:global(.purchaseFiles){
+  margin-top:auto;
+  padding-top:24px;
+  display:grid;
+  gap:8px;
+}
+:global(.purchaseFileButton){
+  width:100%;
+  min-height:58px;
+  padding:10px 14px;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:var(--ivory);
+  color:var(--ink);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  text-align:inherit;
+  cursor:pointer;
+}
+:global(.purchaseFileButton:hover){
+  border-color:var(--copper);
+  background:var(--white);
+}
+:global(.purchaseFileButton span){
+  font-weight:700;
+}
+:global(.purchaseFileButton small){
+  color:var(--muted);
+  font-size:11px;
+}

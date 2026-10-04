@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import PublicHeader from "@/components/public-header";
 import PublicFooter from "@/components/public-footer";
 import { createClient } from "@/lib/supabase/server";
+import { startStoreCheckout } from "@/app/actions/store-checkout";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function StoreProductPage({params}:{params:Promise<{slug:st
   const signedIn=Boolean(claims?.claims);
   const {data:product}=await supabase
     .from("store_products")
-    .select("id,slug,sku,title_ar,summary_ar,product_type,price_sar,compare_at_price_sar,delivery_mode,license_tier,preview_ar,published_at")
+    .select("id,slug,sku,title_ar,summary_ar,product_type,price_sar,compare_at_price_sar,delivery_mode,license_tier,preview_ar,published_at,checkout_status")
     .eq("slug",slug)
     .eq("status","PUBLISHED")
     .maybeSingle();
@@ -41,7 +42,12 @@ export default async function StoreProductPage({params}:{params:Promise<{slug:st
         <span>السعر</span>
         <strong>{Number(product.price_sar).toLocaleString("ar-SA")} ر.س</strong>
         <small>{product.license_tier === "COMMERCIAL" ? "ترخيص تجاري" : product.license_tier === "PROFESSIONAL" ? "ترخيص احترافي" : "ترخيص قياسي"}</small>
-        <div className="purchasePending">الشراء والتسليم الآليان يُفعّلان قبل نشر أول منتج مدفوع.</div>
+        {product.checkout_status==="READY"
+          ? <form className="purchaseForm" action={startStoreCheckout.bind(null,slug)}>
+              <button className="purchaseButton" type="submit">اشتر الآن</button>
+              <span>يتم التسليم تلقائيًا إلى «مشترياتي» بعد تأكيد الدفع.</span>
+            </form>
+          : <div className="purchasePending">الدفع غير متاح لهذا المنتج حاليًا.</div>}
       </aside>
     </section>
 

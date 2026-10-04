@@ -15,6 +15,7 @@ export default async function WorkspaceLayout({children}:Readonly<{children:Reac
         <Link href="/vault"><span>خزنة الفرص</span><small>02</small></Link>
         <Link href="/assets"><span>الأصول</span><small>03</small></Link>
         <Link href="/deals"><span>الصفقات</span><small>04</small></Link>
+        <Link href="/commerce"><span>التجارة</span><small>05</small></Link>
       </nav>
       <div className="sidebarFoot"><span>الحساب</span><small>{email}</small></div>
     </aside>
