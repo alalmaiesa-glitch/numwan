@@ -1,95 +1,85 @@
-# Saudi Industrial Intelligence — V1
+# Saudi Industrial Intelligence — Heavy Industry Map V1
 
 Status: **Internal product build**
 SKU: **NW-DATA-SA-IND-001**
 Public status: **DRAFT**
 Initial price hypothesis: **SAR 349**
-Primary market: Saudi Arabia / GCC / international companies researching Saudi industry
+Primary market: Saudi Arabia / GCC / international industrial, ESG, consulting and market-entry teams
 
 ## Product promise
 
-A clean, structured and source-traceable industrial intelligence dataset that helps buyers discover and segment Saudi industrial establishments without rebuilding the research from scratch.
+A clean, structured and source-traceable map of Saudi heavy-industry facilities that gives analysts a usable starting point for industrial market mapping without rebuilding the underlying open-data research.
 
-This is not a resale of a third-party directory.
+This is not a resale of a private industrial directory.
 
-## Rights rule
+## V1 scope
 
-The commercial deliverable must be rebuilt from:
-- Saudi government open data,
-- sources whose licenses explicitly permit reuse,
-- first-party information published by establishments,
-- and original Numwan enrichment.
+Primary commercial source: Climate TRACE manufacturing / industrial asset data under CC BY 4.0.
 
-Restricted private-directory content may be used only as a discovery lead where legally appropriate. It must not be copied into the commercial deliverable unless reuse permission exists.
+Target fields include:
+- facility / asset name,
+- industrial subsector,
+- asset type,
+- location,
+- owner where available,
+- capacity and units where available,
+- activity indicators where available,
+- emissions indicators,
+- source / license / retrieval metadata.
 
-No product can be published while rights status is not CLEARED.
+Saudi government open datasets may be added only after their dataset-level reuse basis is recorded in the Rights Ledger.
 
-## V1 deliverables
+## Explicit exclusions
+
+- No records copied from industry.com.sa.
+- No redistribution of the mixed-source Numwan research workbook.
+- No invented phone, email, commercial registration, HS code or ownership value.
+- No claim that V1 is a complete census of all Saudi factories.
+
+## Deliverables
 
 1. Main dataset — XLSX.
 2. Machine-readable dataset — CSV.
-3. Data dictionary.
-4. Source register with source URL / license basis / retrieval date.
-5. Release notes and coverage statement.
-6. Buyer guide explaining filters and fields.
-
-## Target fields
-
-- establishment_name_ar
-- establishment_name_en (when verified)
-- commercial_registration (when reusable and verified)
-- region
-- city
-- industrial_activity
-- sector
-- products
-- hs_codes
-- website
-- public_email
-- public_phone
-- source_url
-- source_type
-- source_license
-- verified_at
-- confidence
-- notes
-
-Not every row must contain every field. Missing data must remain missing rather than inferred.
+3. Free sample dataset.
+4. Data dictionary.
+5. Source & Rights Register.
+6. Release notes / coverage statement.
+7. Buyer guide.
 
 ## Quality gates
 
-- No duplicated establishment identity after normalization.
-- Every commercial row has at least one source.
-- Every source has an explicit reuse basis.
-- Source dates are stored.
-- No fabricated email, phone, product, HS code, location, or company identity.
+- Every commercial row traces to an INCLUDED source.
+- No duplicate facility identity after normalization.
+- Missing values remain missing rather than being invented.
+- Source version and retrieval date are recorded.
+- Attribution requirements ship with the product.
 - Coverage limitations are stated on the product page.
-- Sample rows are separated from the paid file and contain no restricted fields.
 
-## Initial positioning
+## Positioning
 
 Arabic:
-"بيانات صناعية سعودية منظمة، موثقة المصدر، وجاهزة للبحث والتحليل بدل البدء من الصفر."
+"خريطة بيانات موثقة للصناعات الثقيلة السعودية — جاهزة للتحليل، وليست مجرد قائمة أسماء."
 
 English:
-"Source-traceable Saudi industrial intelligence, structured for research, sourcing and market-entry work."
+"Source-traceable Saudi heavy-industry intelligence, structured for analysis and market mapping."
 
 ## Upgrade path
 
 V1: one-time licensed download.
 
 V1.1:
-- regional filters,
 - sector packs,
-- buyer/supplier discovery views.
+- regional views,
+- ownership enrichment,
+- Saudi government open-data enrichment where licensed.
 
 V2:
-- update subscription,
+- scheduled updates,
 - change tracking,
-- API/data access if recurring demand is proven.
+- API/data subscription if repeat demand is proven.
 
 ## Revenue role
 
-This product is the first NUMWAN 20K validation product. Its job is not to maximize catalog size. Its job is to prove:
+The first NUMWAN 20K product exists to prove the full automated loop:
 
-Discovery → Product page → Payment → Automated entitlement → Download → Repeatable sale.
+Discovery → Preview → Payment → Entitlement → Secure Download → Repeatable Sale.
