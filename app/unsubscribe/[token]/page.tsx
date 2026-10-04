@@ -1,5 +1,8 @@
+import "../../store/store.module.css";
 import PublicHeader from "@/components/public-header";
+import PublicHeaderEn from "@/components/public-header-en";
 import PublicFooter from "@/components/public-footer";
+import PublicFooterEn from "@/components/public-footer-en";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { unsubscribeStoreLead } from "@/app/actions/unsubscribe-lead";
 
@@ -41,8 +44,11 @@ export default async function UnsubscribePage({
   const en=language==="en";
   const done=query.done==="1" || alreadyUnsubscribed;
 
-  return <main className="publicSite storePage" lang={en?"en":"ar"} dir={en?"ltr":"rtl"}>
-    <PublicHeader signedIn={false} light/>
+  const Header=en?PublicHeaderEn:PublicHeader;
+  const Footer=en?PublicFooterEn:PublicFooter;
+
+  return <main className={"publicSite storePage "+(en?"englishSite":"")} lang={en?"en":"ar"} dir={en?"ltr":"rtl"}>
+    <Header signedIn={false} light/>
     <section className="storeHero shellWide">
       <span className="sectionKicker">{en?"EMAIL PREFERENCES":"تفضيلات البريد"}</span>
       <h1>{done
@@ -68,6 +74,6 @@ export default async function UnsubscribePage({
           </form>
         : null}
     </section>
-    <PublicFooter signedIn={false}/>
+    <Footer signedIn={false}/>
   </main>;
 }
