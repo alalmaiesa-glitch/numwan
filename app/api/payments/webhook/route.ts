@@ -38,7 +38,7 @@ export async function POST(request:Request){
       if(error) throw error;
     }
 
-    return new NextResponse(null,{status:204});
+    return NextResponse.json({ok:true,status:event.status},{status:200});
   }catch(error){
     console.error("Numwan payment webhook failed",error);
     return NextResponse.json({ok:false},{status:400});

@@ -131,8 +131,16 @@ export default async function EnglishStoreProductPage({params}:{params:Promise<{
         <small>{product.license_tier==="COMMERCIAL"?"Commercial license":product.license_tier==="PROFESSIONAL"?"Professional license":"Standard license"}</small>
         {product.checkout_status==="READY"
           ? <form className="purchaseForm" action={startStoreCheckout.bind(null,slug)}>
-              <button className="purchaseButton" type="submit">Buy now</button>
-              <span>Delivery appears automatically in Purchases after payment confirmation.</span>
+              <label className="purchaseField">
+                <span>Name</span>
+                <input name="buyer_name" autoComplete="name" required minLength={2} placeholder="Name used for payment"/>
+              </label>
+              <label className="purchaseField">
+                <span>Mobile number</span>
+                <input name="buyer_phone" autoComplete="tel" inputMode="tel" required placeholder="05xxxxxxxx"/>
+              </label>
+              <button className="purchaseButton" type="submit">Continue to secure payment</button>
+              <span>Card payment is completed on EdfaPay's hosted page. Your files appear in Purchases after payment confirmation.</span>
             </form>
           : <div className="purchasePending">Checkout is not available for this product yet.</div>}
       </aside>

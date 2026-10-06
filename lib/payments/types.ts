@@ -11,6 +11,8 @@ export type CreateCheckoutInput = {
   orderCode: string;
   amountSar: number;
   buyerEmail: string;
+  buyerName: string;
+  buyerPhone: string;
   successUrl: string;
   cancelUrl: string;
 };
@@ -26,7 +28,7 @@ export type VerifiedPaymentEvent = {
   providerPaymentId: string;
   providerReference?: string;
   orderCode: string;
-  status: Extract<NumwanPaymentStatus,"PAID"|"FAILED"|"REFUNDED">;
+  status: Extract<NumwanPaymentStatus,"PENDING"|"PAID"|"FAILED"|"REFUNDED"|"CANCELED">;
   amountSar: number;
   occurredAt: string;
 };
