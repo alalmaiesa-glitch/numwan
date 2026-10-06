@@ -6,8 +6,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getPaymentProvider } from "@/lib/payments/provider";
 import { getSiteUrl } from "@/lib/site-url";
 
-function safeProductPath(slug:string){
-  return "/store/"+encodeURIComponent(slug);
+function safeProductPath(slug:string,locale="ar"){
+  const prefix=locale==="en" ? "/en/store/" : "/store/";
+  return prefix+encodeURIComponent(slug);
 }
 
 function textField(formData:FormData,key:string){
@@ -20,22 +21,27 @@ function validPhone(value:string){
   return /^(?:\+9665\d{8}|009665\d{8}|05\d{8}|5\d{8})$/.test(normalized);
 }
 
+function checkoutError(slug:string,locale:string,code:string):never{
+  redirect(safeProductPath(slug,locale)+"?checkout_error="+encodeURIComponent(code));
+}
+
 export async function startStoreCheckout(slug:string,formData:FormData){
+  const locale=textField(formData,"checkout_locale")==="en" ? "en" : "ar";
   const supabase=await createClient();
   const {data:claims}=await supabase.auth.getClaims();
   const userId=typeof claims?.claims?.sub==="string" ? claims.claims.sub : "";
   const email=typeof claims?.claims?.email==="string" ? claims.claims.email.trim() : "";
 
   if(!userId || !email){
-    const next=safeProductPath(slug);
+    const next=safeProductPath(slug,locale);
     redirect("/login?next="+encodeURIComponent(next));
   }
 
   const buyerName=textField(formData,"buyer_name");
   const buyerPhone=textField(formData,"buyer_phone");
 
-  if(buyerName.length<2) throw new Error("BUYER_NAME_REQUIRED");
-  if(!validPhone(buyerPhone)) throw new Error("BUYER_PHONE_INVALID");
+  if(buyerName.length<2) checkoutError(slug,locale,"name");
+  if(!validPhone(buyerPhone)) checkoutError(slug,locale,"phone");
 
   const {data:product,error:productError}=await supabase
     .from("store_products")
@@ -45,17 +51,35 @@ export async function startStoreCheckout(slug:string,formData:FormData){
     .maybeSingle();
 
   if(productError || !product || product.checkout_status!=="READY"){
-    throw new Error("PRODUCT_NOT_AVAILABLE_FOR_CHECKOUT");
+    checkoutError(slug,locale,"unavailable");
   }
 
-  const admin=createAdminClient();
+  const {data:existingEntitlement}=await supabase
+    .from("store_entitlements")
+    .select("id")
+    .eq("product_id",product.id)
+    .eq("status","ACTIVE")
+    .limit(1)
+    .maybeSingle();
+
+  if(existingEntitlement){
+    redirect("/account/purchases");
+  }
+
+  let admin;
+  try{
+    admin=createAdminClient();
+  }catch{
+    checkoutError(slug,locale,"order");
+  }
+
   const {data:orderId,error:orderError}=await admin.rpc("create_store_order_v1",{
     p_product_id:product.id,
     p_buyer_user_id:userId,
     p_buyer_email:email
   });
 
-  if(orderError || !orderId) throw new Error("ORDER_CREATION_FAILED");
+  if(orderError || !orderId) checkoutError(slug,locale,"order");
 
   const {data:order,error:orderReadError}=await admin
     .from("store_orders")
@@ -63,20 +87,31 @@ export async function startStoreCheckout(slug:string,formData:FormData){
     .eq("id",orderId)
     .single();
 
-  if(orderReadError || !order) throw new Error("ORDER_READ_FAILED");
+  if(orderReadError || !order) checkoutError(slug,locale,"order");
 
   const siteUrl=getSiteUrl();
   const payment=getPaymentProvider();
-  const checkout=await payment.createCheckout({
-    orderId,
-    orderCode:order.order_code,
-    amountSar:Number(order.total_sar),
-    buyerEmail:email,
-    buyerName,
-    buyerPhone,
-    successUrl:siteUrl+"/account/purchases?payment=success",
-    cancelUrl:siteUrl+safeProductPath(slug)+"?payment=cancelled"
-  });
+  let checkout;
+
+  try{
+    checkout=await payment.createCheckout({
+      orderId,
+      orderCode:order.order_code,
+      amountSar:Number(order.total_sar),
+      buyerEmail:email,
+      buyerName,
+      buyerPhone,
+      successUrl:siteUrl+"/account/purchases?payment=success",
+      cancelUrl:siteUrl+safeProductPath(slug,locale)+"?payment=cancelled"
+    });
+  }catch{
+    await admin.rpc("fail_store_payment_v1",{
+      p_order_code:order.order_code,
+      p_provider:"edfapay",
+      p_provider_reference:"checkout_creation_failed"
+    });
+    checkoutError(slug,locale,"provider");
+  }
 
   const {error:markError}=await admin.rpc("mark_store_order_awaiting_payment_v1",{
     p_order_id:orderId,
@@ -84,7 +119,7 @@ export async function startStoreCheckout(slug:string,formData:FormData){
     p_provider_checkout_id:checkout.providerCheckoutId
   });
 
-  if(markError) throw new Error("ORDER_PAYMENT_STATE_FAILED");
+  if(markError) checkoutError(slug,locale,"state");
 
   redirect(checkout.checkoutUrl);
 }
