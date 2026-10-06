@@ -2,7 +2,9 @@ import "server-only";
 import { cache } from "react";
 import { createPublicClient } from "@/lib/supabase/public";
 
-export const getPublishedStoreProduct=cache(async(slug:string)=>{\n  if(slug==="saudi-industrial-intelligence-v1") return null;
+export const getPublishedStoreProduct=cache(async(slug:string)=>{
+  if(slug==="saudi-industrial-intelligence-v1") return null;
+
   const supabase=createPublicClient();
   const {data,error}=await supabase
     .from("store_products")
