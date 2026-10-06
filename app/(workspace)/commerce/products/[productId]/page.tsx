@@ -39,11 +39,13 @@ export default async function CommerceProductReviewPage({
 
   if(!userId) notFound();
 
+  const {data:isAdmin}=await supabase.rpc("is_numwan_admin");
+  if(!isAdmin) notFound();
+
   const {data:product}=await supabase
     .from("store_products")
     .select("id,slug,sku,title_ar,summary_ar,preview_ar,product_type,status,price_sar,rights_status,delivery_status,checkout_status,product_version,source_attribution,updated_at,created_by")
     .eq("id",productId)
-    .eq("created_by",userId)
     .maybeSingle();
 
   if(!product) notFound();
