@@ -20,6 +20,15 @@ const typeLabels:Record<string,string>={
   TOOLKIT:"Toolkit"
 };
 
+const checkoutErrorMessages:Record<string,string>={
+  name:"Enter a valid name to continue.",
+  phone:"Check the mobile number and try again.",
+  unavailable:"Checkout is not available for this product.",
+  order:"We could not create the order. No charge was made; please try again.",
+  provider:"We could not open the payment provider. No charge was made.",
+  state:"The payment session was created but the order state could not be saved. Please try again."
+};
+
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{
   const {slug}=await params;
   const product=await getPublishedStoreProduct(slug);
@@ -58,17 +67,40 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
   };
 }
 
-export default async function EnglishStoreProductPage({params}:{params:Promise<{slug:string}>}){
+export default async function EnglishStoreProductPage({
+  params,
+  searchParams
+}:{
+  params:Promise<{slug:string}>,
+  searchParams:Promise<{checkout_error?:string,payment?:string}>
+}){
   const {slug}=await params;
+  const query=await searchParams;
   const product=await getPublishedStoreProduct(slug);
   if(!product) notFound();
 
   const supabase=await createClient();
   const {data:claims}=await supabase.auth.getClaims();
-  const signedIn=Boolean(claims?.claims);
+  const userId=typeof claims?.claims?.sub==="string" ? claims.claims.sub : "";
+  const signedIn=Boolean(userId);
+
+  let owned=false;
+  if(userId){
+    const {data:entitlement}=await supabase
+      .from("store_entitlements")
+      .select("id")
+      .eq("product_id",product.id)
+      .eq("status","ACTIVE")
+      .limit(1)
+      .maybeSingle();
+    owned=Boolean(entitlement);
+  }
+
   const base=getSiteUrl();
   const canonical=base+"/en/store/"+product.slug;
   const isPaymentTest=product.slug==="payment-test-5-sar";
+  const checkoutError=query.checkout_error ? checkoutErrorMessages[query.checkout_error]||checkoutErrorMessages.order : "";
+  const cancelled=query.payment==="cancelled";
 
   const structuredData=isPaymentTest?null:{
     "@context":"https://schema.org",
@@ -131,20 +163,29 @@ export default async function EnglishStoreProductPage({params}:{params:Promise<{
         <span>PRICE</span>
         <strong>SAR {Number(product.price_sar).toLocaleString("en-US")}</strong>
         <small>{product.license_tier==="COMMERCIAL"?"Commercial license":product.license_tier==="PROFESSIONAL"?"Professional license":"Standard license"}</small>
-        {product.checkout_status==="READY"
-          ? <form className="purchaseForm" action={startStoreCheckout.bind(null,slug)}>
-              <label className="purchaseField">
-                <span>Name</span>
-                <input name="buyer_name" autoComplete="name" required minLength={2} placeholder="Name used for payment"/>
-              </label>
-              <label className="purchaseField">
-                <span>Mobile number</span>
-                <input name="buyer_phone" autoComplete="tel" inputMode="tel" required placeholder="05xxxxxxxx"/>
-              </label>
-              <button className="purchaseButton" type="submit">Continue to secure payment</button>
-              <span>Card payment is completed on EdfaPay's hosted page. Your files appear in Purchases after payment confirmation.</span>
-            </form>
-          : <div className="purchasePending">Checkout is not available for this product yet.</div>}
+        {owned
+          ? <div className="purchaseState purchaseStateSuccess">
+              <strong>Purchase confirmed</strong>
+              <span>This asset is active in your account and ready in Purchases.</span>
+              <a className="purchaseButton purchaseLink" href="/account/purchases">Open Purchases</a>
+            </div>
+          : product.checkout_status==="READY"
+            ? <form className="purchaseForm" action={startStoreCheckout.bind(null,slug)}>
+                <input type="hidden" name="checkout_locale" value="en"/>
+                {checkoutError?<div className="purchaseState purchaseStateError">{checkoutError}</div>:null}
+                {cancelled?<div className="purchaseState">Payment was cancelled and no entitlement was granted.</div>:null}
+                <label className="purchaseField">
+                  <span>Name</span>
+                  <input name="buyer_name" autoComplete="name" required minLength={2} placeholder="Name used for payment"/>
+                </label>
+                <label className="purchaseField">
+                  <span>Mobile number</span>
+                  <input name="buyer_phone" autoComplete="tel" inputMode="tel" required placeholder="05xxxxxxxx"/>
+                </label>
+                <button className="purchaseButton" type="submit">Continue to secure payment</button>
+                <span>Card payment is completed on EdfaPay's hosted page. Your files appear in Purchases after payment confirmation.</span>
+              </form>
+            : <div className="purchasePending">Checkout is not available for this product yet.</div>}
       </aside>
     </section>
 
