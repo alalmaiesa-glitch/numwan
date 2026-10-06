@@ -28,6 +28,9 @@ export async function GET(_request:Request,{params}:{params:Promise<{fileId:stri
 
   if(!userId) return new Response("Unauthorized",{status:401});
 
+  const {data:isAdmin}=await supabase.rpc("is_numwan_admin");
+  if(!isAdmin) return new Response("Forbidden",{status:403});
+
   const {data:file,error:fileError}=await supabase
     .from("store_product_files")
     .select("id,product_id,file_label,storage_path,mime_type,is_active")
@@ -41,7 +44,6 @@ export async function GET(_request:Request,{params}:{params:Promise<{fileId:stri
     .from("store_products")
     .select("id,created_by,slug")
     .eq("id",file.product_id)
-    .eq("created_by",userId)
     .maybeSingle();
 
   if(!product) return new Response("Forbidden",{status:403});
