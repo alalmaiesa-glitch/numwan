@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 const rightsLabel:Record<string,string>={PENDING:"معلّق",REVIEW:"مراجعة",CLEARED:"مجاز",BLOCKED:"محظور"};
@@ -9,6 +10,7 @@ export default async function CommercePage(){
 
   const [
     {data:products},
+    {data:productFiles},
     {data:orders},
     {count:insightViews},
     {data:landingEvents},
@@ -21,6 +23,9 @@ export default async function CommercePage(){
     supabase.from("store_products")
       .select("id,sku,title_ar,status,price_sar,rights_status,delivery_status,checkout_status,updated_at")
       .order("updated_at",{ascending:false}),
+    supabase.from("store_product_files")
+      .select("id,product_id")
+      .eq("is_active",true),
     supabase.from("store_orders")
       .select("id,order_code,status,total_sar,created_at")
       .order("created_at",{ascending:false}),
@@ -68,6 +73,10 @@ export default async function CommercePage(){
   const landingViews=(landingEvents??[]).length;
   const campaignReady=(campaignAssets??[]).filter(asset=>asset.status==="READY").length;
   const campaignBlocked=(campaignAssets??[]).filter(asset=>asset.status==="BLOCKED_PAYMENT").length;
+  const fileCountByProduct=new Map<string,number>();
+  for(const file of productFiles??[]){
+    fileCountByProduct.set(file.product_id,(fileCountByProduct.get(file.product_id)||0)+1);
+  }
 
   const metrics=[
     ["01",insightViews??0,"مشاهدة الرؤية"],
@@ -190,7 +199,11 @@ export default async function CommercePage(){
               الحقوق: {rightsLabel[product.rights_status]??product.rights_status}
               {" · "}التسليم: {deliveryLabel[product.delivery_status]??product.delivery_status}
               {" · "}الدفع: {checkoutLabel[product.checkout_status]??product.checkout_status}
+              {" · "}ملفات التسليم: {fileCountByProduct.get(product.id)||0}
             </p>
+            <div className="assetWorkspaceActions">
+              <Link className="button ghost small" href={"/commerce/products/"+product.id}>استعراض المنتج</Link>
+            </div>
           </div>
           <div className="assetWorkspaceMeta">
             <div><span>الحالة</span><strong>{product.status}</strong></div>
