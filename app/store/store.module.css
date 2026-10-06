@@ -350,3 +350,47 @@
 :global(.purchaseField input:focus){
   border-color:var(--mineral);
 }
+
+:global(.purchaseState){
+  margin-top:16px;
+  padding:14px 15px;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:rgba(255,255,255,.58);
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.75;
+  display:grid;
+  gap:8px;
+}
+:global(.purchaseState strong){
+  color:var(--ink);
+  font-size:14px;
+}
+:global(.purchaseStateSuccess){
+  border-color:rgba(12,92,58,.28);
+}
+:global(.purchaseStateError){
+  border-color:rgba(146,67,49,.3);
+}
+:global(.purchaseLink){
+  margin-top:4px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+}
+:global(.purchaseReturn){
+  margin-top:28px;
+  max-width:760px;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.52);
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.75;
+}
+:global(.purchaseReturnSuccess){
+  border-color:rgba(12,92,58,.28);
+  color:var(--ink);
+}
