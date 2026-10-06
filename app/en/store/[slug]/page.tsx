@@ -34,6 +34,7 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
   const base=getSiteUrl();
   const canonical=base+"/en/store/"+product.slug;
   const arabic=base+"/store/"+product.slug;
+  const isPaymentTest=product.slug==="payment-test-5-sar";
 
   return {
     title:(product.title_en||product.title_ar)+" | NUMWAN",
@@ -53,7 +54,7 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
       siteName:"NUMWAN",
       locale:"en_US"
     },
-    robots:{index:true,follow:true}
+    robots:isPaymentTest?{index:false,follow:false}:{index:true,follow:true}
   };
 }
 
@@ -67,8 +68,9 @@ export default async function EnglishStoreProductPage({params}:{params:Promise<{
   const signedIn=Boolean(claims?.claims);
   const base=getSiteUrl();
   const canonical=base+"/en/store/"+product.slug;
+  const isPaymentTest=product.slug==="payment-test-5-sar";
 
-  const structuredData={
+  const structuredData=isPaymentTest?null:{
     "@context":"https://schema.org",
     "@graph":[
       {
@@ -113,10 +115,10 @@ export default async function EnglishStoreProductPage({params}:{params:Promise<{
   };
 
   return <main className="publicSite storePage englishSite" lang="en" dir="ltr">
-    <script
+    {structuredData?<script
       type="application/ld+json"
       dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData).replace(/</g,"\u003c")}}
-    />
+    />:null}
     <StoreViewTracker productId={product.id}/>
     <PublicHeaderEn signedIn={signedIn} light/>
     <section className="productHero shellWide">
