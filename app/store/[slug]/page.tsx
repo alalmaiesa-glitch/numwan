@@ -132,8 +132,16 @@ export default async function StoreProductPage({params}:{params:Promise<{slug:st
         <small>{product.license_tier==="COMMERCIAL"?"ترخيص تجاري":product.license_tier==="PROFESSIONAL"?"ترخيص احترافي":"ترخيص قياسي"}</small>
         {product.checkout_status==="READY"
           ? <form className="purchaseForm" action={startStoreCheckout.bind(null,slug)}>
-              <button className="purchaseButton" type="submit">اشتر الآن</button>
-              <span>يتم التسليم تلقائيًا إلى «مشترياتي» بعد تأكيد الدفع.</span>
+              <label className="purchaseField">
+                <span>الاسم</span>
+                <input name="buyer_name" autoComplete="name" required minLength={2} placeholder="الاسم كما سيظهر في عملية الدفع"/>
+              </label>
+              <label className="purchaseField">
+                <span>رقم الجوال</span>
+                <input name="buyer_phone" autoComplete="tel" inputMode="tel" required placeholder="05xxxxxxxx"/>
+              </label>
+              <button className="purchaseButton" type="submit">المتابعة إلى الدفع الآمن</button>
+              <span>تتم عملية البطاقة في صفحة مزود الدفع، ويظهر التنزيل في «مشترياتي» بعد تأكيد العملية.</span>
             </form>
           : <div className="purchasePending">الدفع غير متاح لهذا المنتج حاليًا.</div>}
       </aside>
