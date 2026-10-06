@@ -71,7 +71,15 @@ export default async function SaudiHeavyIndustrySnapshot(){
     inLanguage:["ar","en"],
     spatialCoverage:{"@type":"Place",name:"Saudi Arabia"},
     temporalCoverage:String(snapshot.data_year),
-    creator:{"@type":"Organization",name:"نُموان"},
+    creator:{"@type":"Organization",name:"نُموان",url:base},
+    publisher:{"@type":"Organization",name:"نُموان",url:base},
+    license:{
+      "@type":"CreativeWork",
+      name:"Climate TRACE data terms / CC BY 4.0 with source-specific exceptions",
+      url:"https://climatetrace.org/terms"
+    },
+    isAccessibleForFree:true,
+    dateModified:new Date(snapshot.updated_at).toISOString(),
     isBasedOn:"https://climatetrace.org/data",
     variableMeasured:[
       "facility coverage",
