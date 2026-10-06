@@ -36,6 +36,7 @@ export default async function StorePage(){
     .from("store_products")
     .select("id,slug,sku,title_ar,summary_ar,product_type,price_sar,license_tier,is_featured,published_at")
     .eq("status","PUBLISHED")
+    .neq("slug","payment-test-5-sar")
     .order("is_featured",{ascending:false})
     .order("published_at",{ascending:false});
 
