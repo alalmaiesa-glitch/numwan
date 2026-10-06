@@ -326,3 +326,27 @@
 :global(.sampleDownload span){
   color:var(--copper);
 }
+
+:global(.purchaseField){
+  display:grid;
+  gap:7px;
+}
+:global(.purchaseField span){
+  color:var(--muted);
+  font-size:12px;
+  font-weight:600;
+}
+:global(.purchaseField input){
+  width:100%;
+  min-height:46px;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:var(--white);
+  color:var(--ink);
+  font:inherit;
+  outline:none;
+}
+:global(.purchaseField input:focus){
+  border-color:var(--mineral);
+}
