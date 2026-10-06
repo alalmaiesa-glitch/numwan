@@ -20,6 +20,15 @@ const typeLabels:Record<string,string>={
   TOOLKIT:"أدوات"
 };
 
+const checkoutErrorMessages:Record<string,string>={
+  name:"أدخل اسمًا صحيحًا للمتابعة إلى الدفع.",
+  phone:"تحقق من رقم الجوال ثم حاول مرة أخرى.",
+  unavailable:"الدفع غير متاح لهذا المنتج حاليًا.",
+  order:"تعذر إنشاء الطلب. لم يتم خصم أي مبلغ، ويمكنك المحاولة مرة أخرى.",
+  provider:"تعذر فتح صفحة الدفع لدى مزود الخدمة. لم يتم خصم أي مبلغ.",
+  state:"تم إنشاء جلسة الدفع لكن تعذر تثبيت حالة الطلب. حاول مرة أخرى."
+};
+
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{
   const {slug}=await params;
   const product=await getPublishedStoreProduct(slug);
@@ -58,17 +67,40 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
   };
 }
 
-export default async function StoreProductPage({params}:{params:Promise<{slug:string}>}){
+export default async function StoreProductPage({
+  params,
+  searchParams
+}:{
+  params:Promise<{slug:string}>,
+  searchParams:Promise<{checkout_error?:string,payment?:string}>
+}){
   const {slug}=await params;
+  const query=await searchParams;
   const product=await getPublishedStoreProduct(slug);
   if(!product) notFound();
 
   const supabase=await createClient();
   const {data:claims}=await supabase.auth.getClaims();
-  const signedIn=Boolean(claims?.claims);
+  const userId=typeof claims?.claims?.sub==="string" ? claims.claims.sub : "";
+  const signedIn=Boolean(userId);
+
+  let owned=false;
+  if(userId){
+    const {data:entitlement}=await supabase
+      .from("store_entitlements")
+      .select("id")
+      .eq("product_id",product.id)
+      .eq("status","ACTIVE")
+      .limit(1)
+      .maybeSingle();
+    owned=Boolean(entitlement);
+  }
+
   const base=getSiteUrl();
   const canonical=base+"/store/"+product.slug;
   const isPaymentTest=product.slug==="payment-test-5-sar";
+  const checkoutError=query.checkout_error ? checkoutErrorMessages[query.checkout_error]||checkoutErrorMessages.order : "";
+  const cancelled=query.payment==="cancelled";
 
   const structuredData=isPaymentTest?null:{
     "@context":"https://schema.org",
@@ -132,20 +164,28 @@ export default async function StoreProductPage({params}:{params:Promise<{slug:st
         <span>السعر</span>
         <strong>{Number(product.price_sar).toLocaleString("ar-SA")} ر.س</strong>
         <small>{product.license_tier==="COMMERCIAL"?"ترخيص تجاري":product.license_tier==="PROFESSIONAL"?"ترخيص احترافي":"ترخيص قياسي"}</small>
-        {product.checkout_status==="READY"
-          ? <form className="purchaseForm" action={startStoreCheckout.bind(null,slug)}>
-              <label className="purchaseField">
-                <span>الاسم</span>
-                <input name="buyer_name" autoComplete="name" required minLength={2} placeholder="الاسم كما سيظهر في عملية الدفع"/>
-              </label>
-              <label className="purchaseField">
-                <span>رقم الجوال</span>
-                <input name="buyer_phone" autoComplete="tel" inputMode="tel" required placeholder="05xxxxxxxx"/>
-              </label>
-              <button className="purchaseButton" type="submit">المتابعة إلى الدفع الآمن</button>
-              <span>تتم عملية البطاقة في صفحة مزود الدفع، ويظهر التنزيل في «مشترياتي» بعد تأكيد العملية.</span>
-            </form>
-          : <div className="purchasePending">الدفع غير متاح لهذا المنتج حاليًا.</div>}
+        {owned
+          ? <div className="purchaseState purchaseStateSuccess">
+              <strong>تم تأكيد الشراء</strong>
+              <span>هذا الأصل مضاف إلى حسابك وجاهز ضمن «مشترياتي».</span>
+              <a className="purchaseButton purchaseLink" href="/account/purchases">فتح مشترياتي</a>
+            </div>
+          : product.checkout_status==="READY"
+            ? <form className="purchaseForm" action={startStoreCheckout.bind(null,slug)}>
+                {checkoutError?<div className="purchaseState purchaseStateError">{checkoutError}</div>:null}
+                {cancelled?<div className="purchaseState">تم إلغاء عملية الدفع ولم يتم منح الأصل.</div>:null}
+                <label className="purchaseField">
+                  <span>الاسم</span>
+                  <input name="buyer_name" autoComplete="name" required minLength={2} placeholder="الاسم كما سيظهر في عملية الدفع"/>
+                </label>
+                <label className="purchaseField">
+                  <span>رقم الجوال</span>
+                  <input name="buyer_phone" autoComplete="tel" inputMode="tel" required placeholder="05xxxxxxxx"/>
+                </label>
+                <button className="purchaseButton" type="submit">المتابعة إلى الدفع الآمن</button>
+                <span>تتم عملية البطاقة في صفحة مزود الدفع، ويظهر التنزيل في «مشترياتي» بعد تأكيد العملية.</span>
+              </form>
+            : <div className="purchasePending">الدفع غير متاح لهذا المنتج حاليًا.</div>}
       </aside>
     </section>
 
