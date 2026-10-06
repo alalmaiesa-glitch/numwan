@@ -338,6 +338,50 @@ button{border:0}
 .assetWorkspaceMeta>div{padding-top:10px}
 .assetWorkspaceMeta span{display:block;font-size:11px;color:var(--muted)}
 .assetWorkspaceMeta strong{font-family:var(--font-latin),var(--font-arabic-body),sans-serif;font-size:12px;font-weight:600}
+.assetWorkspaceActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+
+.reviewTopbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:34px}
+.reviewTopbar>span{font-size:12px;color:var(--muted)}
+.productReviewHead{margin-bottom:34px}
+.productReviewFacts{
+  display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  margin-bottom:34px
+}
+.productReviewFacts>div{padding:20px 18px;border-left:1px solid var(--line)}
+.productReviewFacts>div:last-child{border-left:0}
+.productReviewFacts span{display:block;font-size:11px;color:var(--muted);margin-bottom:7px}
+.productReviewFacts strong{font-family:var(--font-latin),var(--font-arabic-body),sans-serif;font-size:15px}
+.productReviewCopy{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:88px}
+.productReviewCopy>div{border-top:1px solid var(--line);padding-top:16px}
+.productReviewCopy span{font-size:11px;color:var(--muted)}
+.productReviewCopy p{font-size:14px;line-height:1.9;margin:10px 0 0}
+.reviewSectionHead{margin-bottom:30px}
+.reviewFileGrid{
+  display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);
+  border-right:1px solid var(--line);margin-bottom:42px
+}
+.reviewFileCard{
+  min-height:150px;padding:22px;display:flex;flex-direction:column;gap:8px;
+  border-left:1px solid var(--line);border-bottom:1px solid var(--line);transition:.18s ease
+}
+.reviewFileCard:hover,.reviewFileCard.active{background:#fff}
+.reviewFileCard.active{box-shadow:inset 0 -3px 0 var(--ink)}
+.reviewFileCard>span{font-family:var(--font-latin),sans-serif;font-size:10px;color:var(--copper)}
+.reviewFileCard strong{font-size:16px;font-weight:600;margin-top:auto}
+.reviewFileCard small{font-family:var(--font-latin),sans-serif;font-size:10px;color:var(--muted);overflow-wrap:anywhere}
+.reviewPreview{border-top:1px solid var(--ink);padding-top:28px}
+.reviewPreviewHead{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:24px}
+.reviewPreviewHead h2{font-family:var(--font-arabic-display),sans-serif;font-size:34px;font-weight:500;margin:7px 0 8px}
+.reviewPreviewHead p{font-size:13px;color:var(--muted);margin:0}
+.reviewTableWrap{overflow:auto;max-height:68vh;border:1px solid var(--line);background:#fff}
+.reviewTable{direction:ltr;min-width:1800px}
+.reviewTable th,.reviewTable td{text-align:left;font-family:var(--font-latin),var(--font-arabic-body),sans-serif;font-size:11px}
+.reviewTable thead th{position:sticky;top:0;background:var(--ivory);z-index:1}
+.reviewTextPreview{
+  direction:ltr;text-align:left;white-space:pre-wrap;overflow:auto;max-height:68vh;
+  margin:0;border:1px solid var(--line);background:#fff;padding:24px;font:12px/1.8 var(--font-latin),monospace
+}
+.compactEmpty{padding:40px 0}
 
 /* Responsive */
 @media(max-width:1100px){
@@ -371,6 +415,7 @@ button{border:0}
   .workspaceProcess>div{grid-template-columns:40px 90px 1fr}
   .grid2,.grid3,.split{grid-template-columns:1fr}
   .assetWorkspaceRow{grid-template-columns:46px 1fr;gap:16px}.assetWorkspaceMeta{grid-column:2}
+  .reviewFileGrid{grid-template-columns:repeat(2,1fr)}.productReviewFacts{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:520px){
   .shellWide{width:min(100% - 32px,1440px)}
@@ -383,6 +428,7 @@ button{border:0}
   .metricsGrid{grid-template-columns:1fr}.metricRow{border-left:0;border-bottom:1px solid var(--line)}
   .metricRow:last-child{border-bottom:0}.workspaceProcess>div{grid-template-columns:38px 1fr}.workspaceProcess p{grid-column:2}
   .assetWorkspaceRow{grid-template-columns:38px 1fr}.assetWorkspaceMeta{grid-template-columns:1fr 1fr}
+  .reviewTopbar,.reviewPreviewHead{align-items:stretch;flex-direction:column}.reviewFileGrid,.productReviewFacts,.productReviewCopy{grid-template-columns:1fr}.reviewFileCard{min-height:120px}
 }
 
 /* Detailed pages — Editorial / Premium / Analytical */
