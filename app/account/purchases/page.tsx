@@ -7,7 +7,12 @@ import { downloadStoreFile } from "@/app/actions/store-download";
 
 export const dynamic="force-dynamic";
 
-export default async function PurchasesPage(){
+export default async function PurchasesPage({
+  searchParams
+}:{
+  searchParams:Promise<{payment?:string}>
+}){
+  const query=await searchParams;
   const supabase=await createClient();
   const {data:claims}=await supabase.auth.getClaims();
   const signedIn=Boolean(claims?.claims);
@@ -45,12 +50,21 @@ export default async function PurchasesPage(){
     filesByProduct.set(file.product_id,list);
   }
 
+  const paymentReturned=query.payment==="success";
+
   return <main className="publicSite storePage">
     <PublicHeader signedIn={true} light/>
     <section className="storeHero shellWide">
       <span className="sectionKicker">حسابي</span>
       <h1>مشترياتي</h1>
       <p>الأصول الرقمية التي تملك حق الوصول إليها. روابط التحميل مؤقتة وتصدر عند الطلب.</p>
+      {paymentReturned
+        ? <div className={entitlements?.length?"purchaseReturn purchaseReturnSuccess":"purchaseReturn"}>
+            {entitlements?.length
+              ? "تم تأكيد الدفع، والأصل متاح الآن للتنزيل."
+              : "عادت عملية الدفع. إذا لم يظهر الأصل بعد، أعد تحميل الصفحة خلال لحظات حتى يصل التأكيد النهائي."}
+          </div>
+        : null}
     </section>
 
     <section className="storeCatalog shellWide">
