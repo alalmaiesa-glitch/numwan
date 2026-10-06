@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/server";
 export default async function WorkspaceLayout({children}:Readonly<{children:React.ReactNode}>) {
   const supabase=await createClient(); const {data}=await supabase.auth.getClaims();
   if(!data?.claims) redirect("/login");
+  const {data:isAdmin}=await supabase.rpc("is_numwan_admin");
+  if(!isAdmin) redirect("/");
   const email=typeof data.claims.email==="string"?data.claims.email:"";
   return <div className="workspace">
     <aside className="sidebar">
