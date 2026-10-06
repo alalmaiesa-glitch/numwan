@@ -18,10 +18,10 @@ function baseUrl(){
   const configured=process.env.EDFAPAY_API_BASE_URL?.trim();
   if(configured) return configured.replace(/\/$/,"");
 
-  const environment=(process.env.EDFAPAY_ENV||"sandbox").trim().toLowerCase();
-  return environment==="production"
-    ? "https://app-api.edfapay.com"
-    : "https://demo-api.edfapay.com";
+  const environment=(process.env.EDFAPAY_ENV||"production").trim().toLowerCase();
+  return environment==="sandbox"
+    ? "https://demo-api.edfapay.com"
+    : "https://app-api.edfapay.com";
 }
 
 function normalizePhone(value:string){
@@ -49,6 +49,14 @@ function asNumber(value:unknown){
     if(Number.isFinite(parsed)) return parsed;
   }
   return NaN;
+}
+
+function pickString(record:JsonRecord,...keys:string[]){
+  for(const key of keys){
+    const value=asString(record[key]);
+    if(value) return value;
+  }
+  return "";
 }
 
 function sameAmount(left:number,right:number){
@@ -81,6 +89,26 @@ async function requestJson(path:string,init:RequestInit){
   return asObject(body);
 }
 
+async function parseWebhook(request:Request){
+  const contentType=(request.headers.get("content-type")||"").toLowerCase();
+
+  if(contentType.includes("application/x-www-form-urlencoded")){
+    const raw=await request.text();
+    return Object.fromEntries(new URLSearchParams(raw).entries()) as JsonRecord;
+  }
+
+  const raw=await request.text();
+  if(!raw) throw new Error("EDFAPAY_WEBHOOK_EMPTY");
+
+  try{
+    return asObject(JSON.parse(raw));
+  }catch{
+    const params=new URLSearchParams(raw);
+    if([...params.keys()].length) return Object.fromEntries(params.entries()) as JsonRecord;
+    throw new Error("EDFAPAY_WEBHOOK_INVALID_BODY");
+  }
+}
+
 async function inquireTransaction(transactionId:string){
   const apiKey=requireEnv("EDFAPAY_API_KEY");
   const response=await requestJson(
@@ -92,7 +120,7 @@ async function inquireTransaction(transactionId:string){
   const content=Array.isArray(data.content) ? data.content : [];
   const match=content
     .map(asObject)
-    .find(item=>asString(item.transactionId)===transactionId);
+    .find(item=>pickString(item,"transactionId","trans_id")===transactionId);
 
   if(!match) throw new Error("EDFAPAY_TRANSACTION_NOT_FOUND");
   return match;
@@ -100,8 +128,8 @@ async function inquireTransaction(transactionId:string){
 
 function queryState(transaction:JsonRecord){
   const values=[
-    asString(transaction.transactionStatus),
-    asString(transaction.paymentStatus)
+    pickString(transaction,"transactionStatus"),
+    pickString(transaction,"paymentStatus")
   ].map(value=>value.toUpperCase()).filter(Boolean);
 
   const failed=values.some(value=>
@@ -114,31 +142,55 @@ function queryState(transaction:JsonRecord){
   return {failed,paid};
 }
 
-function webhookStatus(payload:JsonRecord,transaction:JsonRecord):VerifiedPaymentEvent["status"]{
-  const status=asString(payload.status).toUpperCase();
-  const type=asString(payload.type).toUpperCase();
+function determineStatus(
+  payload:JsonRecord,
+  transaction:JsonRecord
+):VerifiedPaymentEvent["status"]{
+  const status=pickString(payload,"status").toUpperCase();
+  const result=pickString(payload,"result").toUpperCase();
+  const action=pickString(payload,"action").toUpperCase();
+  const type=pickString(payload,"type","transactionType").toUpperCase();
   const state=queryState(transaction);
 
-  if(["PENDING","REDIRECT"].includes(status)) return "PENDING";
+  const isRefund=
+    action==="CREDITVOID" ||
+    type==="REFUND" ||
+    status==="REFUND";
 
-  if(type==="REFUND" && status==="APPROVED"){
+  if(isRefund && ["ACCEPTED","SUCCESS","APPROVED"].includes(result||status)){
     const originalAmount=asNumber(transaction.amount);
     const refundedAmount=asNumber(transaction.totalRefundAmount);
-    const refundStatus=asString(transaction.refundStatus).toUpperCase();
+    const refundStatus=pickString(transaction,"refundStatus").toUpperCase();
 
     if(
       refundStatus.includes("FULL") ||
-      (Number.isFinite(originalAmount) && Number.isFinite(refundedAmount) && refundedAmount>=originalAmount)
+      (Number.isFinite(originalAmount) &&
+       Number.isFinite(refundedAmount) &&
+       refundedAmount>=originalAmount)
     ) return "REFUNDED";
 
     return "PENDING";
   }
 
-  if(status==="APPROVED"){
+  if(
+    ["PENDING","REDIRECT"].includes(status) ||
+    ["PENDING","REDIRECT"].includes(result)
+  ) return "PENDING";
+
+  const settledWebhook=
+    (result==="SUCCESS" && ["SETTLED","SUCCESS","APPROVED"].includes(status)) ||
+    (status==="APPROVED" && result!=="DECLINED");
+
+  if(settledWebhook){
     return state.paid && !state.failed ? "PAID" : "PENDING";
   }
 
-  if(status==="DECLINED"){
+  const declinedWebhook=
+    status==="DECLINED" ||
+    result==="DECLINED" ||
+    ["FAILED","REJECTED","CANCELED","CANCELLED"].includes(status);
+
+  if(declinedWebhook){
     return state.failed ? "FAILED" : "PENDING";
   }
 
@@ -191,21 +243,17 @@ export const edfaPayProvider:NumwanPaymentProvider={
   },
 
   async verifyWebhook(request:Request):Promise<VerifiedPaymentEvent>{
-    const raw=await request.text();
-    let parsed:unknown;
-    try{parsed=JSON.parse(raw);}catch{throw new Error("EDFAPAY_WEBHOOK_INVALID_JSON");}
-
-    const payload=asObject(parsed);
-    const transactionId=asString(payload.transactionId);
-    const payloadOrderId=asString(payload.orderId);
+    const payload=await parseWebhook(request);
+    const transactionId=pickString(payload,"transactionId","trans_id");
+    const payloadOrderId=pickString(payload,"orderId","order_id");
     const payloadAmount=asNumber(payload.amount);
 
     if(!transactionId) throw new Error("EDFAPAY_WEBHOOK_TRANSACTION_ID_MISSING");
 
-    // Fail closed: independently verify the transaction with EdfaPay's
-    // authenticated status API before changing Numwan order state.
+    // Never trust a callback by itself. Confirm the transaction against
+    // EdfaPay's authenticated transaction-status API before changing Numwan.
     const transaction=await inquireTransaction(transactionId);
-    const orderCode=asString(transaction.orderId)||payloadOrderId;
+    const orderCode=pickString(transaction,"orderId","order_id")||payloadOrderId;
     const amountSar=asNumber(transaction.amount);
 
     if(!orderCode) throw new Error("EDFAPAY_ORDER_ID_MISSING");
@@ -215,18 +263,20 @@ export const edfaPayProvider:NumwanPaymentProvider={
     if(Number.isFinite(payloadAmount) && !sameAmount(payloadAmount,amountSar)){
       throw new Error("EDFAPAY_AMOUNT_MISMATCH");
     }
+    if(!Number.isFinite(amountSar)){
+      throw new Error("EDFAPAY_AMOUNT_MISSING");
+    }
 
     return {
       provider:"edfapay",
       providerPaymentId:transactionId,
-      providerReference:asString(transaction.rrn)||undefined,
+      providerReference:pickString(transaction,"rrn")||pickString(payload,"rrn")||undefined,
       orderCode,
-      status:webhookStatus(payload,transaction),
+      status:determineStatus(payload,transaction),
       amountSar,
       occurredAt:
-        asString(payload.finishedAt) ||
-        asString(transaction.finishedAt) ||
-        asString(payload.createdAt) ||
+        pickString(transaction,"finishedAt") ||
+        pickString(transaction,"createdAt") ||
         new Date().toISOString()
     };
   }
