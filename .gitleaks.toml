@@ -1,0 +1,36 @@
+# EIMDADAT — reviewed historical false positives only.
+# Keep the default Gitleaks rules. Never suppress whole files or rule classes.
+# These exceptions require BOTH a specific historic commit and exact file path.
+# 2026-10-10: existing source inspected; no private server credential identified.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+  [[rules.allowlists]]
+  description = "Historical export catalog uses data field 'key' with nonsecret labels (2 reviewed commits)"
+  condition = "AND"
+  commits = [
+    "0dfa73cdce71b98a5880b67b4f965e0f878c1f86",
+    "af8805c6bd22fe35d97f8d12da2574a804bdcc45",
+  ]
+  paths = ['''^lib/store/product1-export\.ts$''']
+
+  [[rules.allowlists]]
+  description = "Historical Supabase publishable key, not a service-role secret"
+  condition = "AND"
+  commits = ["48434b99d6f31ca0185a0454b247b2df18de4a96"]
+  paths = ['''^lib/supabase/config\.ts$''']
+
+[[rules]]
+id = "linkedin-client-id"
+
+  [[rules.allowlists]]
+  description = "Historical editorial heading mentioning LinkedIn, not a client ID"
+  condition = "AND"
+  commits = [
+    "55bb553ec773ac891797e606154197271fda958b",
+    "d8d7981b48bdc42d78d2f951d60a1bebcfe56d02",
+  ]
+  paths = ['''^docs/launch/PRODUCT1_LAUNCH_PACK_V1\.md$''']
